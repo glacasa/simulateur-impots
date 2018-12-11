@@ -33,6 +33,16 @@ var app = new Vue({
       }
       return total;
     },
+    tauxMarginal: function() {
+      let ref = this.totalImposable;
+      for (let i = 0; i < this.bareme.length; i++) {
+        var tx = this.bareme[i];
+        if (tx.min < ref && tx.max > ref) {
+          return tx.taux;
+        }
+      }
+    },
+
     totalImposableCsg: function() {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
@@ -63,11 +73,11 @@ var app = new Vue({
       return total;
     },
     montantTotalImpot() {
-      return this.montantImpotParPart * this.parts;
+      return Math.round(this.montantImpotParPart * this.parts);
     },
 
-    montantTotalCsg(){
-        return this.totalImposableCsg * 0.172;
+    montantTotalCsg() {
+      return Math.round(this.totalImposableCsg * 0.172);
     },
 
     pourcentagePrelevement() {

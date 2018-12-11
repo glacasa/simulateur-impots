@@ -8,11 +8,11 @@ class Revenu {
   }
 
   montantAnnuel() {
-    return this.montant * this.multiplicateur;
+    return Math.trunc(this.montant * this.multiplicateur);
   }
 
   montantImposable() {
-    return Math.round(this.montantAnnuel()) * (1 - this.abattement);
+    return Math.trunc(this.montantAnnuel() * (1 - this.abattement));
   }
 }
 

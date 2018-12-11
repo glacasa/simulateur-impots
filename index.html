@@ -32,21 +32,23 @@
       <h2>Impots sur le revenu</h2>
       <dl>
         <dt>Revenus totaux</dt>
-        <dd>{{ revenusTotaux }}</dd>
-        <dt>Revenus imposables</dt>
-        <dd>{{ totalImposable }}</dd>
+        <dd>{{ revenusTotaux }} €</dd>
+        <dt>Revenu fiscal de référence</dt>
+        <dd>{{ totalImposable }} €</dd>
         <dt>Total impôt</dt>
-        <dd>{{ montantTotalImpot }} ({{ montantTotalImpot / 12 }} / mois)</dd>
+        <dd>{{ montantTotalImpot }} € ({{ (montantTotalImpot / 12).toFixed(2) }} €/mois)</dd>
+        <dt>Taux marginal</dt>
+        <dd>{{ tauxMarginal*100 }} %</dd>
         <dt>Pourcentage prélèvement</dt>
-        <dd>{{ pourcentagePrelevement }} %</dd>
+        <dd>{{ pourcentagePrelevement.toFixed(1) }} %</dd>
       </dl>
 
       <h2>CSG</h2>
       <dl>
         <dt>Revenus imposables à la CSG</dt>
-        <dd>{{ totalImposableCsg }}</dd>
+        <dd>{{ totalImposableCsg }} €</dd>
         <dt>Total CSG</dt>
-        <dd>{{ montantTotalCsg }} ({{ montantTotalCsg / 12 }} / mois)</dd>
+        <dd>{{ montantTotalCsg }} € ({{ (montantTotalCsg / 12).toFixed(2) }} €/mois)</dd>
       </dl>
     </div>
 
