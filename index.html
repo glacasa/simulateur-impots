@@ -2,6 +2,7 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Simulateur d'impôts sur le revenu</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
   </head>
@@ -84,16 +85,16 @@
           <table class="table">
             <thead>
               <tr>
-                <th scope="col" style="width:20%">Revenus</th>
+                <th scope="col">Revenus</th>
+                <th class="d-hidden d-md-table-cell" style="width:50%"></th>
                 <th></th>
-                <th style="width:180px;"></th>
-                <th style="width:140px;"></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="r in revenus">
                 <td>{{ r.type }}</td>
-                <td>
+                <td class="d-none d-md-table-cell">
                   <input
                     type="range"
                     v-model.number="r.montant"
@@ -119,7 +120,7 @@
       </div>
 
       <div class="row">
-        <div class="col-6">
+        <div class="col-md-6 col-sm-12">
           <div class="card bg-light ">
             <div class="card-header">Impots sur le revenu</div>
             <dl class="card-body">
@@ -142,7 +143,7 @@
           </div>
         </div>
 
-        <div v-if="montantTotalCsg" class="col-6">
+        <div v-if="montantTotalCsg" class="col-md-6 col-sm-12">
           <div class="card bg-light ">
             <div class="card-header">Prélèvements sociaux</div>
             <dl class="card-body">
@@ -159,7 +160,12 @@
           </div>
         </div>
       </div>
+    <hr />
+    <footer>
+        <p>Code source disponible sur <a href="https://github.com/glacasa/simulateur-impots">Github</a></p>
+    </footer>
     </div>
+
 
     <script src="vue/vue.js"></script>
     <script src="revenus.js"></script>
