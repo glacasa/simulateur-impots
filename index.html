@@ -8,22 +8,21 @@
     <h1>Simulateur d'impôts sur le revenu</h1>
 
     <div id="app">
-      
       <h2>Situation</h2>
       <dl>
         <dt>Vous déclarez vos impôts :</dt>
         <dd>
           <label>
-            <input type="radio" v-model="etatcivil" value="1" /> seul
+            <input type="radio" v-model.number="etatcivil" value="1" /> seul
           </label>
           <label>
-            <input type="radio" v-model="etatcivil" value="2" /> en couple
-            (mariage / PACS)
+            <input type="radio" v-model.number="etatcivil" value="2" /> en
+            couple (mariage / PACS)
           </label>
         </dd>
         <dt>Nombre d'enfants à charge :</dt>
         <dd>
-          <input type="range" min="0" max="10" v-model="nbEnfants" />
+          <input type="range" min="0" max="10" v-model.number="nbEnfants" />
           {{ nbEnfants }}
         </dd>
       </dl>
@@ -31,18 +30,65 @@
       <div>Nombre de parts : {{ parts }}</div>
 
       <h2>Revenus :</h2>
-      <table>
-        <thead>
-          <td>Type de revenu</td>
-          <td>Total annuel</td>
-          <td>Imposable après abattement</td>
-        </thead>
-        <tr v-for="revenu in revenus">
-          <td>{{ revenu.type }}</td>
-          <td><input type="number" v-model="revenu.montant" step="0.01" /></td>
-          <td>{{ revenu.montantImposable() }}</td>
-        </tr>
-      </table>
+
+      <div>
+        <h3>Traitements, salaires</h3>
+
+        <input
+          type="range"
+          v-model.number="salaire.montant"
+          min="0"
+          max="120000"
+          step="600"
+        />
+        <input type="number" step="600" v-model.number="salaire.montant" /> ({{
+          Math.round(salaire.montant / 12)
+        }}
+        €/mois)
+      </div>
+
+      <div>
+        <h3>Revenus fonciers</h3>
+
+        <input
+          type="range"
+          v-model.number="foncier.montant"
+          min="0"
+          max="15000"
+          step="600"
+        />
+        <input type="number" step="600" v-model.number="foncier.montant" /> ({{
+          Math.round(foncier.montant / 12)
+        }}
+        €/mois)
+      </div>
+
+      <div>
+        <h3>Dividendes</h3>
+
+        <input
+          type="range"
+          v-model.number="dividendes.montant"
+          min="0"
+          max="100000"
+          step="500"
+        />
+        <input type="number" step="500" v-model.number="dividendes.montant" />
+      </div>
+      <!--
+        <table>
+          <thead>
+            <td>Type de revenu</td>
+            <td>Total annuel</td>
+            <td>Imposable après abattement</td>
+          </thead>
+          <tr v-for="revenu in revenus">
+            <td>{{ revenu.type }}</td>
+            <td><input type="number" v-model="revenu.montant" step="0.01" /></td>
+            <td>{{ revenu.montantImposable() }}</td>
+          </tr>
+        </table>
+      -->
 
       <h2>Impots sur le revenu</h2>
       <dl>
@@ -63,7 +109,7 @@
         <dd>{{ pourcentagePrelevement.toFixed(1) }} %</dd>
       </dl>
 
-      <h2 v-if="montantTotalCsg">CSG</h2>
+      <h2 v-if="montantTotalCsg">Prélèvements sociaux</h2>
       <dl v-if="montantTotalCsg">
         <dt>Revenus imposables à la CSG</dt>
         <dd>{{ totalImposableCsg }} €</dd>

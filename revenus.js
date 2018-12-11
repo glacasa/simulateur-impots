@@ -17,13 +17,13 @@ class Salaire extends Revenu {
   }
 }
 
-class Loyer extends Revenu {
+class Foncier extends Revenu {
   constructor(montant) {
     super("Revenu foncier", montant, 0.3, true);
   }
 }
 
-class Dividende extends Revenu {
+class Dividende extends Revenu {  
   constructor(montant) {
     super("Dividendes", montant, 0.4, true);
   }

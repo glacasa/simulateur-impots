@@ -6,7 +6,11 @@ var app = new Vue({
     etatcivil: 1,
     nbEnfants: 0,
 
-    revenus: [new Salaire(1000), new Loyer(200), new Dividende(20000)],
+    // Revenus
+    salaire: new Salaire(21600),
+    foncier: new Foncier(0),
+    dividendes: new Dividende(0),
+
     bareme: [
       // Barème 2018
       // https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France
@@ -26,7 +30,11 @@ var app = new Vue({
         partsEnfants = this.nbEnfants - 1;
       }
 
-      return parseInt(this.etatcivil) + partsEnfants;
+      return this.etatcivil + partsEnfants;
+    },
+
+    revenus: function() {
+      return [this.salaire, this.foncier, this.dividendes];
     },
 
     revenusTotaux: function() {
@@ -61,7 +69,7 @@ var app = new Vue({
       let ref = this.imposableParPart;
       for (let i = 0; i < this.bareme.length; i++) {
         var tx = this.bareme[i];
-        if (tx.min < ref && tx.max > ref) {
+        if (tx.min <= ref && tx.max > ref) {
           return Math.round(tx.taux * 100);
         }
       }
@@ -91,6 +99,9 @@ var app = new Vue({
     },
 
     pourcentagePrelevement() {
+      if (!this.revenusTotaux) {
+        return 0;
+      }
       return (this.montantTotalImpot / this.revenusTotaux) * 100;
     }
   }
