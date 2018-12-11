@@ -1,13 +1,12 @@
 var app = new Vue({
   el: "#app",
   data: {
-    revenus: [
-      new Salaire(1000),
-      new Salaire(1000),
-      new Loyer(200),
-      new Dividende(20000)
-    ],
-    parts: 1,
+    //Calcul du nombre de parts
+    // https://www.service-public.fr/particuliers/vosdroits/F2705
+    etatcivil: 1,
+    nbEnfants: 0,
+
+    revenus: [new Salaire(1000), new Loyer(200), new Dividende(20000)],
     bareme: [
       // Barème 2018
       // https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France
@@ -19,10 +18,21 @@ var app = new Vue({
     ]
   },
   computed: {
+    parts: function() {
+      var partsEnfants = 0;
+      if (this.nbEnfants <= 2) {
+        partsEnfants = this.nbEnfants / 2;
+      } else {
+        partsEnfants = this.nbEnfants - 1;
+      }
+
+      return parseInt(this.etatcivil) + partsEnfants;
+    },
+
     revenusTotaux: function() {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
-        total += this.revenus[i].montantAnnuel();
+        total += this.revenus[i].montant;
       }
       return total;
     },
@@ -32,15 +42,6 @@ var app = new Vue({
         total += this.revenus[i].montantImposable();
       }
       return total;
-    },
-    tauxMarginal: function() {
-      let ref = this.totalImposable;
-      for (let i = 0; i < this.bareme.length; i++) {
-        var tx = this.bareme[i];
-        if (tx.min < ref && tx.max > ref) {
-          return tx.taux;
-        }
-      }
     },
 
     totalImposableCsg: function() {
@@ -55,6 +56,15 @@ var app = new Vue({
 
     imposableParPart() {
       return this.totalImposable / this.parts;
+    },
+    tauxMarginal: function() {
+      let ref = this.imposableParPart;
+      for (let i = 0; i < this.bareme.length; i++) {
+        var tx = this.bareme[i];
+        if (tx.min < ref && tx.max > ref) {
+          return Math.round(tx.taux * 100);
+        }
+      }
     },
 
     montantImpotParPart() {

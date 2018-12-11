@@ -8,47 +8,72 @@
     <h1>Simulateur d'impôts sur le revenu</h1>
 
     <div id="app">
+      
+      <h2>Situation</h2>
+      <dl>
+        <dt>Vous déclarez vos impôts :</dt>
+        <dd>
+          <label>
+            <input type="radio" v-model="etatcivil" value="1" /> seul
+          </label>
+          <label>
+            <input type="radio" v-model="etatcivil" value="2" /> en couple
+            (mariage / PACS)
+          </label>
+        </dd>
+        <dt>Nombre d'enfants à charge :</dt>
+        <dd>
+          <input type="range" min="0" max="10" v-model="nbEnfants" />
+          {{ nbEnfants }}
+        </dd>
+      </dl>
+
+      <div>Nombre de parts : {{ parts }}</div>
+
       <h2>Revenus :</h2>
       <table>
         <thead>
           <td>Type de revenu</td>
-          <td>Montant mensuel</td>
-          <!-- <td>Période</td> -->
           <td>Total annuel</td>
           <td>Imposable après abattement</td>
         </thead>
         <tr v-for="revenu in revenus">
           <td>{{ revenu.type }}</td>
           <td><input type="number" v-model="revenu.montant" step="0.01" /></td>
-          <!-- <td><input v-model="revenu.multiplicateur" /></td> -->
-          <td>{{ revenu.montantAnnuel() }}</td>
           <td>{{ revenu.montantImposable() }}</td>
         </tr>
       </table>
 
-      <h2>Nombre de parts :</h2>
-      <input v-model="parts" type="number" step="0.5" />
-
       <h2>Impots sur le revenu</h2>
       <dl>
-        <dt>Revenus totaux</dt>
+        <dt>Total des revenus sur l'année</dt>
         <dd>{{ revenusTotaux }} €</dd>
         <dt>Revenu fiscal de référence</dt>
         <dd>{{ totalImposable }} €</dd>
         <dt>Total impôt</dt>
-        <dd>{{ montantTotalImpot }} € ({{ (montantTotalImpot / 12).toFixed(2) }} €/mois)</dd>
+        <dd>
+          {{ montantTotalImpot }} € ({{
+            (montantTotalImpot / 12).toFixed(2)
+          }}
+          €/mois)
+        </dd>
         <dt>Taux marginal</dt>
-        <dd>{{ tauxMarginal*100 }} %</dd>
+        <dd>{{ tauxMarginal }} %</dd>
         <dt>Pourcentage prélèvement</dt>
         <dd>{{ pourcentagePrelevement.toFixed(1) }} %</dd>
       </dl>
 
-      <h2>CSG</h2>
-      <dl>
+      <h2 v-if="montantTotalCsg">CSG</h2>
+      <dl v-if="montantTotalCsg">
         <dt>Revenus imposables à la CSG</dt>
         <dd>{{ totalImposableCsg }} €</dd>
         <dt>Total CSG</dt>
-        <dd>{{ montantTotalCsg }} € ({{ (montantTotalCsg / 12).toFixed(2) }} €/mois)</dd>
+        <dd>
+          {{ montantTotalCsg }} € ({{
+            (montantTotalCsg / 12).toFixed(2)
+          }}
+          €/mois)
+        </dd>
       </dl>
     </div>
 
