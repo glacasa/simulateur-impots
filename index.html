@@ -9,141 +9,156 @@
     <header>
       <div class="navbar navbar-dark bg-dark box-shadow">
         <div class="container">
-          <strong class="navbar-brand"
-            >Simulateur d'impôts sur le revenu</strong
-          >
+          <strong class="navbar-brand">
+            Simulateur d'impôts sur le revenu
+          </strong>
         </div>
       </div>
     </header>
 
     <div id="app" class="container">
-      <h2>Situation :</h2>
-
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <label class="input-group-text">Vous déclarez vos impôts :</label>
+      <div class="row">
+        <div class="col-md-7">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Situation</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Vous déclarez vos impôts :</td>
+                <td>
+                  <select
+                    class="form-control form-control-sm"
+                    v-model.number="etatcivil"
+                  >
+                    <option value="1">seul</option>
+                    <option value="2">en couple (mariage / PACS)</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Nombre d'enfants à charge :</td>
+                <td>
+                  <input
+                    type="number"
+                    v-model.number="nbEnfants"
+                    min="0"
+                    max="20"
+                    id="nbEnfants"
+                    class="form-control form-control-sm"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>Nombre de parts :</td>
+                <td>
+                  <strong>{{ parts }}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <select class="custom-select" v-model.number="etatcivil">
-          <option value="1">seul</option>
-          <option value="2">en couple (mariage / PACS)</option>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="nbEnfants">
-            Nombre d'enfants à charge :
-          </label>
+        <div class="col-md-5">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Barème</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="b in bareme">
+                <td>{{ b.affichageIntervalle() }}</td>
+                <td>{{ Math.round(b.taux * 100) }}%</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <input
-          type="number"
-          v-model.number="nbEnfants"
-          id="nbEnfants"
-          class="form-control"
-        />
       </div>
 
-      <div class="input-group">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="nbEnfants">
-            Nombre de parts :
-          </label>
+      <div class="row">
+        <div class="col">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" style="width:20%">Revenus</th>
+                <th></th>
+                <th style="width:180px;"></th>
+                <th style="width:140px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="r in revenus">
+                <td>{{ r.type }}</td>
+                <td>
+                  <input
+                    type="range"
+                    v-model.number="r.montant"
+                    min="0"
+                    v-bind:max="r.maxDisplay"
+                    v-bind:step="r.step"
+                    class="form-control-range"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    v-bind:step="r.step"
+                    v-model.number="r.montant"
+                    class="form-control"
+                  />
+                </td>
+                <td>({{ Math.round(r.montant / 12) }}&nbsp;€/mois)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <input type="number" class="form-control" v-model="parts" readonly/>
       </div>
 
-      <h2>Revenus :</h2>
+      <div class="row">
+        <div class="col-6">
+          <div class="card bg-light ">
+            <div class="card-header">Impots sur le revenu</div>
+            <dl class="card-body">
+              <dt>Total des revenus sur l'année</dt>
+              <dd>{{ revenusTotaux }} €</dd>
+              <dt>Revenu fiscal de référence</dt>
+              <dd>{{ totalImposable }} €</dd>
+              <dt>Total impôt</dt>
+              <dd>
+                {{ montantTotalImpot }} € ({{
+                  (montantTotalImpot / 12).toFixed(2)
+                }}
+                €/mois)
+              </dd>
+              <dt>Taux marginal</dt>
+              <dd>{{ tauxMarginal }} %</dd>
+              <dt>Pourcentage prélèvement</dt>
+              <dd>{{ pourcentagePrelevement.toFixed(1) }} %</dd>
+            </dl>
+          </div>
+        </div>
 
-      <div>
-        <h3>Traitements, salaires</h3>
-
-        <input
-          type="range"
-          v-model.number="salaire.montant"
-          min="0"
-          max="120000"
-          step="600"
-        />
-        <input type="number" step="600" v-model.number="salaire.montant" /> ({{
-          Math.round(salaire.montant / 12)
-        }}
-        €/mois)
+        <div v-if="montantTotalCsg" class="col-6">
+          <div class="card bg-light ">
+            <div class="card-header">Prélèvements sociaux</div>
+            <dl class="card-body">
+              <dt>Revenus imposables à la CSG</dt>
+              <dd>{{ totalImposableCsg }} €</dd>
+              <dt>Total CSG</dt>
+              <dd>
+                {{ montantTotalCsg }} € ({{
+                  (montantTotalCsg / 12).toFixed(2)
+                }}
+                €/mois)
+              </dd>
+            </dl>
+          </div>
+        </div>
       </div>
-
-      <div>
-        <h3>Revenus fonciers</h3>
-
-        <input
-          type="range"
-          v-model.number="foncier.montant"
-          min="0"
-          max="15000"
-          step="600"
-        />
-        <input type="number" step="600" v-model.number="foncier.montant" /> ({{
-          Math.round(foncier.montant / 12)
-        }}
-        €/mois)
-      </div>
-
-      <div>
-        <h3>Dividendes</h3>
-
-        <input
-          type="range"
-          v-model.number="dividendes.montant"
-          min="0"
-          max="100000"
-          step="500"
-        />
-        <input type="number" step="500" v-model.number="dividendes.montant" />
-      </div>
-      <!--
-        <table>
-          <thead>
-            <td>Type de revenu</td>
-            <td>Total annuel</td>
-            <td>Imposable après abattement</td>
-          </thead>
-          <tr v-for="revenu in revenus">
-            <td>{{ revenu.type }}</td>
-            <td><input type="number" v-model="revenu.montant" step="0.01" /></td>
-            <td>{{ revenu.montantImposable() }}</td>
-          </tr>
-        </table>
-      -->
-
-      <h2>Impots sur le revenu</h2>
-      <dl>
-        <dt>Total des revenus sur l'année</dt>
-        <dd>{{ revenusTotaux }} €</dd>
-        <dt>Revenu fiscal de référence</dt>
-        <dd>{{ totalImposable }} €</dd>
-        <dt>Total impôt</dt>
-        <dd>
-          {{ montantTotalImpot }} € ({{
-            (montantTotalImpot / 12).toFixed(2)
-          }}
-          €/mois)
-        </dd>
-        <dt>Taux marginal</dt>
-        <dd>{{ tauxMarginal }} %</dd>
-        <dt>Pourcentage prélèvement</dt>
-        <dd>{{ pourcentagePrelevement.toFixed(1) }} %</dd>
-      </dl>
-
-      <h2 v-if="montantTotalCsg">Prélèvements sociaux</h2>
-      <dl v-if="montantTotalCsg">
-        <dt>Revenus imposables à la CSG</dt>
-        <dd>{{ totalImposableCsg }} €</dd>
-        <dt>Total CSG</dt>
-        <dd>
-          {{ montantTotalCsg }} € ({{
-            (montantTotalCsg / 12).toFixed(2)
-          }}
-          €/mois)
-        </dd>
-      </dl>
     </div>
 
     <script src="vue/vue.js"></script>

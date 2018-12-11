@@ -1,3 +1,21 @@
+class Bareme {
+  constructor(min, max, taux) {
+    this.min = min;
+    this.max = max;
+    this.taux = taux;
+  }
+
+  affichageIntervalle() {
+    if (this.min == 0) {
+      return "Jusqu'à " + this.max + " €";
+    }
+    if (this.max == Number.MAX_VALUE) {
+      return "Au dessus de " + this.min + " €";
+    }
+    return "De " + this.min + " à " + this.max + " €";
+  }
+}
+
 var app = new Vue({
   el: "#app",
   data: {
@@ -14,11 +32,11 @@ var app = new Vue({
     bareme: [
       // Barème 2018
       // https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France
-      { min: 0, max: 9807, taux: 0 },
-      { min: 9807, max: 27086, taux: 0.14 },
-      { min: 27086, max: 72617, taux: 0.3 },
-      { min: 72617, max: 153783, taux: 0.41 },
-      { min: 153783, max: Number.MAX_VALUE, taux: 0.45 }
+      new Bareme(0,9807,0),
+      new Bareme(9807,27086,0.14),
+      new Bareme(27086,72617,0.3),
+      new Bareme(72617,153783,0.41),
+      new Bareme(153783,Number.MAX_VALUE,0.45)
     ]
   },
   computed: {
