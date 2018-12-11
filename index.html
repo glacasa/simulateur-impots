@@ -3,31 +3,54 @@
   <head>
     <meta charset="utf-8" />
     <title>Simulateur d'impôts sur le revenu</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
   </head>
   <body>
-    <h1>Simulateur d'impôts sur le revenu</h1>
+    <header>
+      <div class="navbar navbar-dark bg-dark box-shadow">
+        <div class="container">
+          <strong class="navbar-brand"
+            >Simulateur d'impôts sur le revenu</strong
+          >
+        </div>
+      </div>
+    </header>
 
-    <div id="app">
-      <h2>Situation</h2>
-      <dl>
-        <dt>Vous déclarez vos impôts :</dt>
-        <dd>
-          <label>
-            <input type="radio" v-model.number="etatcivil" value="1" /> seul
-          </label>
-          <label>
-            <input type="radio" v-model.number="etatcivil" value="2" /> en
-            couple (mariage / PACS)
-          </label>
-        </dd>
-        <dt>Nombre d'enfants à charge :</dt>
-        <dd>
-          <input type="range" min="0" max="10" v-model.number="nbEnfants" />
-          {{ nbEnfants }}
-        </dd>
-      </dl>
+    <div id="app" class="container">
+      <h2>Situation :</h2>
 
-      <div>Nombre de parts : {{ parts }}</div>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <label class="input-group-text">Vous déclarez vos impôts :</label>
+        </div>
+        <select class="custom-select" v-model.number="etatcivil">
+          <option value="1">seul</option>
+          <option value="2">en couple (mariage / PACS)</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="nbEnfants">
+            Nombre d'enfants à charge :
+          </label>
+        </div>
+        <input
+          type="number"
+          v-model.number="nbEnfants"
+          id="nbEnfants"
+          class="form-control"
+        />
+      </div>
+
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="nbEnfants">
+            Nombre de parts :
+          </label>
+        </div>
+        <input type="number" class="form-control" v-model="parts" readonly/>
+      </div>
 
       <h2>Revenus :</h2>
 
