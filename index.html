@@ -8,10 +8,50 @@
     <h1>Simulateur d'impôts sur le revenu</h1>
 
     <div id="app">
-        {{ message }}
+      <h2>Revenus :</h2>
+      <table>
+        <thead>
+          <td>Type de revenu</td>
+          <td>Montant mensuel</td>
+          <!-- <td>Période</td> -->
+          <td>Total annuel</td>
+          <td>Imposable après abattement</td>
+        </thead>
+        <tr v-for="revenu in revenus">
+          <td>{{ revenu.type }}</td>
+          <td><input type="number" v-model="revenu.montant" step="0.01" /></td>
+          <!-- <td><input v-model="revenu.multiplicateur" /></td> -->
+          <td>{{ revenu.montantAnnuel() }}</td>
+          <td>{{ revenu.montantImposable() }}</td>
+        </tr>
+      </table>
+
+      <h2>Nombre de parts :</h2>
+      <input v-model="parts" type="number" step="0.5" />
+
+      <h2>Impots sur le revenu</h2>
+      <dl>
+        <dt>Revenus totaux</dt>
+        <dd>{{ revenusTotaux }}</dd>
+        <dt>Revenus imposables</dt>
+        <dd>{{ totalImposable }}</dd>
+        <dt>Total impôt</dt>
+        <dd>{{ montantTotalImpot }} ({{ montantTotalImpot / 12 }} / mois)</dd>
+        <dt>Pourcentage prélèvement</dt>
+        <dd>{{ pourcentagePrelevement }} %</dd>
+      </dl>
+
+      <h2>CSG</h2>
+      <dl>
+        <dt>Revenus imposables à la CSG</dt>
+        <dd>{{ totalImposableCsg }}</dd>
+        <dt>Total CSG</dt>
+        <dd>{{ montantTotalCsg }} ({{ montantTotalCsg / 12 }} / mois)</dd>
+      </dl>
     </div>
 
     <script src="vue/vue.js"></script>
+    <script src="revenus.js"></script>
     <script src="impots.js"></script>
   </body>
 </html>
