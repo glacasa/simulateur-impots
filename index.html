@@ -253,6 +253,30 @@
                   ></i>
                 </td>
               </tr>
+              <tr v-if="droitsSimples != montantTotalImpot">
+                <td class="small">Droits simples</td>
+                <td class="small">{{ droitsSimples }} €</td>
+                <td>
+                  <i
+                    class="far fa-question-circle"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Montant à payer calculé avant réductions"
+                  ></i>
+                </td>
+              </tr>
+              <tr v-if="decote">
+                <td class="small">Décote</td>
+                <td class="small">-{{ decote }} €</td>
+                <td>
+                  <i
+                    class="far fa-question-circle"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Diminution de l'impot lorsque le montant brut ne dépasse pas 1569€ (imposition individuelle) ou 2585€ (couple - imposition commune)"
+                  ></i>
+                </td>
+              </tr>
               <tr>
                 <td>Impôt sur le revenu net</td>
                 <td>{{ montantTotalImpot }} €</td>

@@ -11,3 +11,7 @@
 .table.income td:nth-child(2) {
   width: 50%;
 }
+
+td.small{
+  font-style: italic;
+}

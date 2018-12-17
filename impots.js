@@ -106,6 +106,8 @@ var app = new Vue({
         this.calculImpot(this.imposableParPart) * this.parts;
 
       //TODO : plafonnement de la réduction quotient familial
+      // https://www.service-public.fr/particuliers/vosdroits/F2702
+      // https://www.service-public.fr/particuliers/vosdroits/F2705
       // var plafonnement = Math.round(
       //   this.plafonnementParPart / (this.parts - 1)
       // );
@@ -114,15 +116,30 @@ var app = new Vue({
       // if (impotSelonQuotientFamilial < impotPlafonne) {
       //   return Math.round(impotPlafonne);
       // } else {
-        return Math.round(impotSelonQuotientFamilial);
+      return Math.round(impotSelonQuotientFamilial);
       // }
+    },
+
+    decote() {
+      let montant = this.droitsSimples;
+      let decote = 0;
+      if (this.etatcivil == 1 && montant <= 1569) {
+        decote = 1177 - montant * 0.75;
+      } else if (this.etatcivil == 2 && montant <= 2585) {
+        decote = 1939 - montant * 0.75;
+      }
+
+      return Math.min(Math.round(decote), montant);
     },
 
     montantTotalImpot() {
       // https://www.service-public.fr/particuliers/vosdroits/F34328
       let montant = this.droitsSimples;
 
-      // TODO Décote
+      // Décote
+      montant -= this.decote;
+
+      //TODO Allegement sous conditions de ressources
 
       // TODO contribution hauts revenus
       // https://www.service-public.fr/particuliers/vosdroits/F31130
