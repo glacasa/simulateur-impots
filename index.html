@@ -16,7 +16,7 @@
       <div class="navbar navbar-dark bg-dark box-shadow">
         <div class="container">
           <strong class="navbar-brand">
-            Simulateur d'impôts sur le revenu
+            Simulateur d'impôt sur le revenu
           </strong>
         </div>
       </div>
@@ -120,13 +120,15 @@
                 <td>{{ b.affichageIntervalle() }}</td>
                 <td>{{ Math.round(b.taux * 100) }}%</td>
               </tr>
-              <tr>
-                <td>
-                  CSG
-                  <small>(sur les revenus du patrimoine et du capital)</small>
-                </td>
-                <td>{{ tauxCsg * 100 }}%</td>
-              </tr>
+              <!--
+                <tr>
+                  <td>
+                    CSG
+                    <small>(sur les revenus du patrimoine et du capital)</small>
+                  </td>
+                  <td>{{ tauxCsg * 100 }}%</td>
+                </tr>
+              -->
             </tbody>
           </table>
         </div>
@@ -197,47 +199,112 @@
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-6 col-sm-12">
-          <div class="card bg-light ">
-            <div class="card-header">Impots sur le revenu</div>
-            <dl class="card-body">
-              <dt>Total des revenus sur l'année</dt>
-              <dd>{{ revenusTotaux }} €</dd>
-              <dt>Revenu fiscal de référence</dt>
-              <dd>{{ totalImposable }} €</dd>
-              <dt>Total impôt</dt>
-              <dd>
-                {{ montantTotalImpot }} € ({{
-                  (montantTotalImpot / 12).toFixed(2)
-                }}
-                €/mois)
-              </dd>
-              <dt>Taux marginal</dt>
-              <dd>{{ tauxMarginal }} %</dd>
-              <dt>Pourcentage prélèvement</dt>
-              <dd>{{ pourcentagePrelevement.toFixed(1) }} %</dd>
-            </dl>
-          </div>
-        </div>
+      <div class="row justify-content-center">
+        <div class="col-8">
+          <table class="table table-dark">
+            <thead>
+              <tr>
+                <th colspan="3">Impôt sur le revenu</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Total des revenus sur l'année</td>
+                <td>{{ revenusTotaux }} €</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Revenu fiscal de référence</td>
+                <td>{{ totalImposable }} €</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Impôt sur le revenu net</td>
+                <td>{{ montantTotalImpot }} €</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-dark" v-if="montantTotalCsg > 0">
+            <thead>
+              <tr>
+                <th colspan="3">Prélèvements sociaux</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Base prélèvements sociaux</td>
+                <td>{{ totalImposableCsg }} €</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Taux prélèvements sociaux</td>
+                <td>{{ tauxCsg * 100 }} %</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Montant prélèvements sociaux</td>
+                <td>{{ montantTotalCsg }} €</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
 
-        <div v-if="montantTotalCsg" class="col-md-6 col-sm-12">
-          <div class="card bg-light ">
-            <div class="card-header">Prélèvements sociaux</div>
-            <dl class="card-body">
-              <dt>Revenus imposables à la CSG</dt>
-              <dd>{{ totalImposableCsg }} €</dd>
-              <dt>Total CSG</dt>
-              <dd>
-                {{ montantTotalCsg }} € ({{
-                  (montantTotalCsg / 12).toFixed(2)
-                }}
-                €/mois)
-              </dd>
-            </dl>
-          </div>
+          <table class="table table-dark">
+            <thead>
+              <tr>
+                <th colspan="3">Bilan</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Montant net à payer</td>
+                <td>{{ montantTotalImpot + montantTotalCsg }} €</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Taux marginal d'imposition</td>
+                <td>{{ tauxMarginal }} %</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Taux de prélèvement</td>
+                <td>{{ pourcentagePrelevement.toFixed(1) }} %</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Revenus mensuels moyens net</td>
+                <td>{{ (revenusTotaux / 12).toFixed(0) }} €</td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Prélèvement à la source (estimation)</td>
+                <td>
+                  {{
+                    ((montantTotalImpot + montantTotalCsg) / 12).toFixed(0)
+                  }}
+                  €
+                </td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>Revenu mensuel après impôt</td>
+                <td>
+                  {{
+                    (
+                      (revenusTotaux - (montantTotalImpot + montantTotalCsg)) /
+                      12
+                    ).toFixed(0)
+                  }}
+                  €
+                </td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
       <hr />
       <footer>
         <p>

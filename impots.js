@@ -28,7 +28,7 @@ var app = new Vue({
     plafonnementParPart: 1527,
 
     // Revenus
-    revenus: [],
+    revenus: [new Salaire(21600)],
 
     // Ajout de revenus
     typeNouveauRevenu: "salaire",
@@ -169,8 +169,8 @@ var app = new Vue({
 
     suppressionRevenus(r) {
       for (let i = 0; i < this.revenus.length; i++) {
-        if (this.revenus[i] == r){
-          this.revenus.splice(i,1);
+        if (this.revenus[i] == r) {
+          this.revenus.splice(i, 1);
         }
       }
     }
