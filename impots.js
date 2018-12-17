@@ -97,7 +97,7 @@ var app = new Vue({
       }
     },
 
-    montantTotalImpot() {
+    droitsSimples() {
       if (this.parts == 1) {
         return Math.round(this.calculImpot(this.totalImposable));
       }
@@ -105,16 +105,29 @@ var app = new Vue({
       let impotSelonQuotientFamilial =
         this.calculImpot(this.imposableParPart) * this.parts;
 
-      var plafonnement = Math.round(
-        this.plafonnementParPart / (this.parts - 1)
-      );
-      let impotPlafonne = this.calculImpot(this.totalImposable) - plafonnement;
+      //TODO : plafonnement de la réduction quotient familial
+      // var plafonnement = Math.round(
+      //   this.plafonnementParPart / (this.parts - 1)
+      // );
+      // let impotPlafonne = this.calculImpot(this.totalImposable) - plafonnement;
 
-      if (impotSelonQuotientFamilial < impotPlafonne) {
-        return Math.round(impotPlafonne);
-      } else {
+      // if (impotSelonQuotientFamilial < impotPlafonne) {
+      //   return Math.round(impotPlafonne);
+      // } else {
         return Math.round(impotSelonQuotientFamilial);
-      }
+      // }
+    },
+
+    montantTotalImpot() {
+      // https://www.service-public.fr/particuliers/vosdroits/F34328
+      let montant = this.droitsSimples;
+
+      // TODO Décote
+
+      // TODO contribution hauts revenus
+      // https://www.service-public.fr/particuliers/vosdroits/F31130
+
+      return montant;
     },
 
     montantTotalCsg() {
