@@ -3,6 +3,10 @@
   cursor: help;
 }
 
-.table td {
+.table td, .table th {
   vertical-align: middle;
+}
+
+.table.income td:nth-child(2){
+  width: 50%;
 }

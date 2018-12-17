@@ -10,9 +10,9 @@ class Bareme {
       return "Jusqu'à " + this.max + " €";
     }
     if (this.max == Number.MAX_VALUE) {
-      return "Au dessus de " + this.min + " €";
+      return "Plus de " + this.min + " €";
     }
-    return "De " + this.min + " à " + this.max + " €";
+    return "De " + this.min + " € à " + this.max + " €";
   }
 }
 
@@ -28,14 +28,16 @@ var app = new Vue({
     plafonnementParPart: 1527,
 
     // Revenus
-    salaire: new Salaire(21600),
-    foncier: new Foncier(0),
-    dividendes: new Dividende(0),
+    revenus: [],
+
+    // Ajout de revenus
+    typeNouveauRevenu: "salaire",
+    nouveauRevenu: new Salaire(0),
 
     // taux d'imposition
     bareme: [
       // Barème 2018
-      // https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France
+      // https://www.service-public.fr/particuliers/vosdroits/F1419
       new Bareme(0, 9807, 0),
       new Bareme(9807, 27086, 0.14),
       new Bareme(27086, 72617, 0.3),
@@ -55,10 +57,6 @@ var app = new Vue({
       }
 
       return this.etatcivil + partsEnfants + this.partsSupplementaires;
-    },
-
-    revenus: function() {
-      return [this.salaire, this.foncier, this.dividendes];
     },
 
     revenusTotaux: function() {
@@ -130,6 +128,12 @@ var app = new Vue({
       return (this.montantTotalImpot / this.revenusTotaux) * 100;
     }
   },
+  watch: {
+    typeNouveauRevenu: function(nouveauType) {
+      var montant = this.nouveauRevenu.montant;
+      this.nouveauRevenu = this.creerRevenu(nouveauType, montant);
+    }
+  },
   methods: {
     calculImpot(imposable) {
       let total = 0;
@@ -144,6 +148,31 @@ var app = new Vue({
         }
       }
       return total;
+    },
+
+    creerRevenu(typeRevenu, montant) {
+      switch (typeRevenu) {
+        case "salaire":
+          return new Salaire(montant);
+        case "foncier":
+          return new Foncier(montant);
+        case "dividende":
+          return new Dividende(montant);
+      }
+      throw "Type de revenus inconnu";
+    },
+
+    ajoutRevenus() {
+      this.revenus.push(this.nouveauRevenu);
+      this.nouveauRevenu = new Salaire(0);
+    },
+
+    suppressionRevenus(r) {
+      for (let i = 0; i < this.revenus.length; i++) {
+        if (this.revenus[i] == r){
+          this.revenus.splice(i,1);
+        }
+      }
     }
   }
 });

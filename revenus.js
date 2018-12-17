@@ -1,6 +1,6 @@
 class Revenu {
-  constructor(type, montant, abattement, csg) {
-    this.type = type;
+  constructor(libelle, montant, abattement, csg) {
+    this.libelle = libelle;
     this.montant = montant;
     this.abattement = abattement;
     this.csg = csg;

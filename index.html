@@ -121,7 +121,10 @@
                 <td>{{ Math.round(b.taux * 100) }}%</td>
               </tr>
               <tr>
-                <td>CSG <small>(sur les revenus du patrimoine et du capital)</small></td>
+                <td>
+                  CSG
+                  <small>(sur les revenus du patrimoine et du capital)</small>
+                </td>
                 <td>{{ tauxCsg * 100 }}%</td>
               </tr>
             </tbody>
@@ -131,18 +134,37 @@
 
       <div class="row">
         <div class="col">
-          <table class="table">
+          <table class="table income">
             <thead>
               <tr>
                 <th scope="col">Revenus</th>
-                <th class="d-hidden d-md-table-cell" style="width:50%"></th>
-                <th></th>
-                <th></th>
+                <th class="d-hidden d-md-table-cell"></th>
+                <th colspan="3">
+                  <button
+                    v-if="revenus.length > 0"
+                    class="btn btn-sm btn-primary float-right"
+                    data-toggle="modal"
+                    data-target="#incomeModal"
+                  >
+                    <i class="fas fa-plus"></i> Ajouter des revenus
+                  </button>
+                </th>
               </tr>
             </thead>
             <tbody>
+              <tr v-if="revenus.length === 0">
+                <td colspan="5" class="text-center">
+                  <button
+                    class="btn btn-lg btn-primary"
+                    data-toggle="modal"
+                    data-target="#incomeModal"
+                  >
+                    <i class="fas fa-plus"></i> Ajouter des revenus
+                  </button>
+                </td>
+              </tr>
               <tr v-for="r in revenus">
-                <td>{{ r.type }}</td>
+                <td>{{ r.libelle }}</td>
                 <td class="d-none d-md-table-cell">
                   <input
                     type="range"
@@ -156,12 +178,19 @@
                 <td>
                   <input
                     type="number"
-                    v-bind:step="r.step"
                     v-model.number="r.montant"
                     class="form-control"
                   />
                 </td>
                 <td>({{ Math.round(r.montant / 12) }}&nbsp;€/mois)</td>
+                <td>
+                  <button
+                    class="btn btn-sm btn-danger"
+                    @click="suppressionRevenus(r)"
+                  >
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -216,6 +245,74 @@
           <a href="https://github.com/glacasa/simulateur-impots">Github</a>
         </p>
       </footer>
+
+      <!-- Ajout de revenus -->
+      <div class="modal fade" id="incomeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Ajouter des revenus</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="selectTypeRevenu">Type de revenus</label>
+                <select
+                  id="selectTypeRevenu"
+                  class="form-control form-control-sm"
+                  v-model="typeNouveauRevenu"
+                >
+                  <option value="salaire">Salaire</option>
+                  <option value="foncier">Foncier</option>
+                  <option value="dividende">Dividendes</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="libelleRevenu">Libellé</label>
+                <input
+                  id="libelleRevenu"
+                  type="text"
+                  class="form-control form-control-sm"
+                  v-model="nouveauRevenu.libelle"
+                />
+              </div>
+              <div class="form-group">
+                <label for="montantRevenu">Montant</label>
+                <input
+                  id="montantRevenu"
+                  type="number"
+                  class="form-control form-control-sm"
+                  v-model.number="nouveauRevenu.montant"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-dismiss="modal"
+                @click="ajoutRevenus"
+              >
+                Ajouter
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="bootstrap/jquery-3.3.1.min.js"></script>
