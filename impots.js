@@ -25,12 +25,14 @@ var app = new Vue({
     etatcivil: 1,
     nbEnfants: 0,
     partsSupplementaires: 0,
+    plafonnementParPart: 1527,
 
     // Revenus
     salaire: new Salaire(21600),
     foncier: new Foncier(0),
     dividendes: new Dividende(0),
 
+    // taux d'imposition
     bareme: [
       // Barème 2018
       // https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France
@@ -39,7 +41,9 @@ var app = new Vue({
       new Bareme(27086, 72617, 0.3),
       new Bareme(72617, 153783, 0.41),
       new Bareme(153783, Number.MAX_VALUE, 0.45)
-    ]
+    ],
+    // https://www.service-public.fr/particuliers/vosdroits/F2329
+    tauxCsg: 0.172
   },
   computed: {
     parts: function() {
@@ -83,7 +87,6 @@ var app = new Vue({
     },
 
     imposableParPart() {
-      // TODO : prise en compte du plafonnement
       return this.totalImposable / this.parts;
     },
     tauxMarginal: function() {
@@ -96,9 +99,40 @@ var app = new Vue({
       }
     },
 
-    montantImpotParPart() {
+    montantTotalImpot() {
+      if (this.parts == 1) {
+        return Math.round(this.calculImpot(this.totalImposable));
+      }
+
+      let impotSelonQuotientFamilial =
+        this.calculImpot(this.imposableParPart) * this.parts;
+
+      var plafonnement = Math.round(
+        this.plafonnementParPart / (this.parts - 1)
+      );
+      let impotPlafonne = this.calculImpot(this.totalImposable) - plafonnement;
+
+      if (impotSelonQuotientFamilial < impotPlafonne) {
+        return Math.round(impotPlafonne);
+      } else {
+        return Math.round(impotSelonQuotientFamilial);
+      }
+    },
+
+    montantTotalCsg() {
+      return Math.round(this.totalImposableCsg * this.tauxCsg);
+    },
+
+    pourcentagePrelevement() {
+      if (!this.revenusTotaux) {
+        return 0;
+      }
+      return (this.montantTotalImpot / this.revenusTotaux) * 100;
+    }
+  },
+  methods: {
+    calculImpot(imposable) {
       let total = 0;
-      var imposable = this.imposableParPart;
       for (let i = 0; i < this.bareme.length; i++) {
         let tranche = this.bareme[i];
         if (imposable > tranche.min) {
@@ -110,20 +144,6 @@ var app = new Vue({
         }
       }
       return total;
-    },
-    montantTotalImpot() {
-      return Math.round(this.montantImpotParPart * this.parts);
-    },
-
-    montantTotalCsg() {
-      return Math.round(this.totalImposableCsg * 0.172);
-    },
-
-    pourcentagePrelevement() {
-      if (!this.revenusTotaux) {
-        return 0;
-      }
-      return (this.montantTotalImpot / this.revenusTotaux) * 100;
     }
   }
 });
