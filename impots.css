@@ -1,0 +1,8 @@
+.fa-question-circle {
+  float: right;
+  cursor: help;
+}
+
+.table td {
+  vertical-align: middle;
+}

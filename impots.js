@@ -20,9 +20,11 @@ var app = new Vue({
   el: "#app",
   data: {
     //Calcul du nombre de parts
+    // https://www.service-public.fr/particuliers/vosdroits/F2702
     // https://www.service-public.fr/particuliers/vosdroits/F2705
     etatcivil: 1,
     nbEnfants: 0,
+    partsSupplementaires: 0,
 
     // Revenus
     salaire: new Salaire(21600),
@@ -32,11 +34,11 @@ var app = new Vue({
     bareme: [
       // Barème 2018
       // https://fr.wikipedia.org/wiki/Bar%C3%A8mes_de_l%27imp%C3%B4t_sur_le_revenu_en_France
-      new Bareme(0,9807,0),
-      new Bareme(9807,27086,0.14),
-      new Bareme(27086,72617,0.3),
-      new Bareme(72617,153783,0.41),
-      new Bareme(153783,Number.MAX_VALUE,0.45)
+      new Bareme(0, 9807, 0),
+      new Bareme(9807, 27086, 0.14),
+      new Bareme(27086, 72617, 0.3),
+      new Bareme(72617, 153783, 0.41),
+      new Bareme(153783, Number.MAX_VALUE, 0.45)
     ]
   },
   computed: {
@@ -48,7 +50,7 @@ var app = new Vue({
         partsEnfants = this.nbEnfants - 1;
       }
 
-      return this.etatcivil + partsEnfants;
+      return this.etatcivil + partsEnfants + this.partsSupplementaires;
     },
 
     revenus: function() {
@@ -81,6 +83,7 @@ var app = new Vue({
     },
 
     imposableParPart() {
+      // TODO : prise en compte du plafonnement
       return this.totalImposable / this.parts;
     },
     tauxMarginal: function() {
@@ -123,4 +126,8 @@ var app = new Vue({
       return (this.montantTotalImpot / this.revenusTotaux) * 100;
     }
   }
+});
+
+$(function() {
+  $('[data-toggle="tooltip"]').tooltip();
 });

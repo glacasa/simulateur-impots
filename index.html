@@ -2,9 +2,14 @@
 <html lang="fr">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <title>Simulateur d'impôts sur le revenu</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="impots.css" />
   </head>
   <body>
     <header>
@@ -23,7 +28,8 @@
           <table class="table table-sm">
             <thead>
               <tr>
-                <th>Situation</th>
+                <th>Quotient familial</th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>
@@ -39,6 +45,14 @@
                     <option value="2">en couple (mariage / PACS)</option>
                   </select>
                 </td>
+                <td>
+                  <i
+                    class="far fa-question-circle"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Un couple (marié ou pacsé) faisant une déclaration commune a droit à 2 parts. Dans les autres cas, 1 part."
+                  ></i>
+                </td>
               </tr>
               <tr>
                 <td>Nombre d'enfants à charge :</td>
@@ -52,12 +66,43 @@
                     class="form-control form-control-sm"
                   />
                 </td>
+                <td>
+                  <i
+                    class="far fa-question-circle"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Les 2 premiers enfants à charge donnent une demi-part chacun. À partir du 3ème, chaque enfant donne droit à une part supplémentaire."
+                  ></i>
+                </td>
+              </tr>
+              <tr>
+                <td>Parts supplémentaires :</td>
+                <td>
+                  <input
+                    type="number"
+                    v-model.number="partsSupplementaires"
+                    min="0"
+                    max="5"
+                    step="0.25"
+                    id="partsSupplementaires"
+                    class="form-control form-control-sm"
+                  />
+                </td>
+                <td>
+                  <i
+                    class="far fa-question-circle"
+                    data-toggle="tooltip"
+                    data-placement="right"
+                    title="Certaines situations (invalide, anciens combattant, ...) peuvent donner droit à des majoration de parts."
+                  ></i>
+                </td>
               </tr>
               <tr>
                 <td>Nombre de parts :</td>
                 <td>
                   <strong>{{ parts }}</strong>
                 </td>
+                <td></td>
               </tr>
             </tbody>
           </table>
@@ -160,13 +205,17 @@
           </div>
         </div>
       </div>
-    <hr />
-    <footer>
-        <p>Code source disponible sur <a href="https://github.com/glacasa/simulateur-impots">Github</a></p>
-    </footer>
+      <hr />
+      <footer>
+        <p>
+          Code source disponible sur
+          <a href="https://github.com/glacasa/simulateur-impots">Github</a>
+        </p>
+      </footer>
     </div>
 
-
+    <script src="bootstrap/jquery-3.3.1.min.js"></script>
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="vue/vue.js"></script>
     <script src="revenus.js"></script>
     <script src="impots.js"></script>
