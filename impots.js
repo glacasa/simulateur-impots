@@ -25,7 +25,6 @@ var app = new Vue({
     etatcivil: 1,
     nbEnfants: 0,
     partsSupplementaires: 0,
-    plafonnementParPart: 1527,
 
     // Revenus
     revenus: [new Salaire(21600)],
@@ -34,21 +33,38 @@ var app = new Vue({
     typeNouveauRevenu: "salaire",
     nouveauRevenu: new Salaire(0),
 
-    // taux d'imposition
+    // taux d'imposition et plafonds
     bareme: [
-      // Barème 2018
+      // Barème 2019
       // https://www.service-public.fr/particuliers/vosdroits/F1419
-      new Bareme(0, 9807, 0),
-      new Bareme(9807, 27086, 0.14),
-      new Bareme(27086, 72617, 0.3),
-      new Bareme(72617, 153783, 0.41),
-      new Bareme(153783, Number.MAX_VALUE, 0.45)
+      new Bareme(0, 9964, 0),
+      new Bareme(9965, 27519, 0.14),
+      new Bareme(27520, 73779, 0.3),
+      new Bareme(73780, 156244, 0.41),
+      new Bareme(156245, Number.MAX_VALUE, 0.45)
     ],
+    montantsSpeciaux: {
+      plafondQfParDemiPartSup: 1551,
+      decoteCouple: {
+        impotMax: 2627,
+        baseCalcul: 1970,
+      },
+      decoteIndiv: {
+        impotMax: 1595,
+        baseCalcul: 1196,
+      },
+      allegementsIndiv: {
+        revenuMaxAllegementDegressif: 21036,
+        revenuMaxAllegementComplet: 18984,
+        augmentationSeuilParPart: 3797 * 2
+      },
+    },
+
     // https://www.service-public.fr/particuliers/vosdroits/F2329
     tauxCsg: 0.172
   },
   computed: {
-    parts: function() {
+    parts: function () {
       var partsEnfants = 0;
       if (this.nbEnfants <= 2) {
         partsEnfants = this.nbEnfants / 2;
@@ -59,14 +75,14 @@ var app = new Vue({
       return this.etatcivil + partsEnfants + this.partsSupplementaires;
     },
 
-    revenusTotaux: function() {
+    revenusTotaux: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
         total += this.revenus[i].montant;
       }
       return total;
     },
-    totalImposable: function() {
+    totalImposable: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
         total += this.revenus[i].montantImposable();
@@ -74,7 +90,7 @@ var app = new Vue({
       return total;
     },
 
-    totalImposableCsg: function() {
+    totalImposableCsg: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
         if (this.revenus[i].csg) {
@@ -87,7 +103,7 @@ var app = new Vue({
     imposableParPart() {
       return this.totalImposable / this.parts;
     },
-    tauxMarginal: function() {
+    tauxMarginal: function () {
       let ref = this.imposableParPart;
       for (let i = 0; i < this.bareme.length; i++) {
         var tx = this.bareme[i];
@@ -102,8 +118,7 @@ var app = new Vue({
         return Math.round(this.calculImpot(this.totalImposable));
       }
 
-      let impotSelonQuotientFamilial =
-        this.calculImpot(this.imposableParPart) * this.parts;
+      let impotSelonQuotientFamilial = this.calculImpot(this.imposableParPart) * this.parts;
 
       //TODO : plafonnement de la réduction quotient familial
       // https://www.service-public.fr/particuliers/vosdroits/F2702
@@ -119,19 +134,39 @@ var app = new Vue({
       return Math.round(impotSelonQuotientFamilial);
       // }
     },
-
     decote() {
       let montant = this.droitsSimples;
+
+      let calculDecote = this.etatcivil === 1
+        ? this.montantsSpeciaux.decoteIndiv
+        : this.montantsSpeciaux.decoteCouple;
+
       let decote = 0;
-      if (this.etatcivil == 1 && montant <= 1569) {
-        decote = 1177 - montant * 0.75;
-      } else if (this.etatcivil == 2 && montant <= 2585) {
-        decote = 1939 - montant * 0.75;
+      if (montant <= calculDecote.impotMax) {
+        decote = calculDecote.baseCalcul - montant * 0.75;
       }
 
       return Math.min(Math.round(decote), montant);
     },
+    allegement() {
+      let montant = this.droitsSimples - this.decote;
 
+      let revenuMaxDegressif = this.montantsSpeciaux.allegementsIndiv.revenuMaxAllegementDegressif * this.etatcivil;
+      revenuMaxDegressif += this.montantsSpeciaux.allegementsIndiv.augmentationSeuilParPart * (this.parts - this.etatcivil);
+
+      if (this.totalImposable <= revenuMaxDegressif) {
+        let allegementComplet = montant * 0.2;
+        let revenuMaxComplet = this.montantsSpeciaux.allegementsIndiv.revenuMaxAllegementComplet * this.etatcivil;
+        if (this.totalImposable <= revenuMaxComplet) {
+          return Math.round(allegementComplet);
+        }
+        else {
+          return Math.round(allegementComplet * ((revenuMaxDegressif - this.totalImposable) / (revenuMaxDegressif - revenuMaxComplet)));
+        }
+      }
+
+      return 0;
+    },
     montantTotalImpot() {
       // https://www.service-public.fr/particuliers/vosdroits/F34328
       let montant = this.droitsSimples;
@@ -139,7 +174,8 @@ var app = new Vue({
       // Décote
       montant -= this.decote;
 
-      //TODO Allegement sous conditions de ressources
+      // Allegement sous conditions de ressources
+      montant -= this.allegement;
 
       // TODO contribution hauts revenus
       // https://www.service-public.fr/particuliers/vosdroits/F31130
@@ -159,7 +195,7 @@ var app = new Vue({
     }
   },
   watch: {
-    typeNouveauRevenu: function(nouveauType) {
+    typeNouveauRevenu: function (nouveauType) {
       var montant = this.nouveauRevenu.montant;
       this.nouveauRevenu = this.creerRevenu(nouveauType, montant);
     }
@@ -205,8 +241,4 @@ var app = new Vue({
       }
     }
   }
-});
-
-$(function() {
-  $('[data-toggle="tooltip"]').tooltip();
 });

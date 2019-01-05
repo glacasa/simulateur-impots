@@ -1,147 +1,106 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>Simulateur d'impôts sur le revenu</title>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="fontawesome/css/all.min.css" />
-    <link rel="stylesheet" href="impots.css" />
-  </head>
-  <body>
-    <header>
-      <div class="navbar navbar-dark bg-dark box-shadow">
-        <div class="container">
-          <strong class="navbar-brand">
-            Simulateur d'impôt sur le revenu
-          </strong>
-        </div>
-      </div>
-    </header>
 
-    <div id="app" class="container">
-      <div class="alert alert-danger" role="alert">
-        Attention : le développement de ce simulateur est en cours, et toutes
-        les règles de calcul de l'impôt ne sont pas encore prises en compte.
-        <br />
-        Pour une estimation plus fiable du montant de votre impôt, reportez vous
-        au
-        <a
-          href="https://www3.impots.gouv.fr/simulateur/calcul_impot/2018/index.htm"
-        >
-          simulateur officiel des finances publiques</a
-        >.
-        <button
-          type="button"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Simulateur d'impôts sur le revenu</title>
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="fontawesome/css/all.min.css" />
+  <link rel="stylesheet" href="impots.css" />
+</head>
 
-      <div class="row">
-        <div class="col-md-7">
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th>Quotient familial</th>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Vous déclarez vos impôts :</td>
-                <td>
-                  <select
-                    class="form-control form-control-sm"
-                    v-model.number="etatcivil"
-                  >
-                    <option value="1">seul</option>
-                    <option value="2">en couple (mariage / PACS)</option>
-                  </select>
-                </td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Un couple (marié ou pacsé) faisant une déclaration commune a droit à 2 parts. Dans les autres cas, 1 part."
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Nombre d'enfants à charge :</td>
-                <td>
-                  <input
-                    type="number"
-                    v-model.number="nbEnfants"
-                    min="0"
-                    max="20"
-                    id="nbEnfants"
-                    class="form-control form-control-sm"
-                  />
-                </td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Les 2 premiers enfants à charge donnent une demi-part chacun. À partir du 3ème, chaque enfant donne droit à une part supplémentaire."
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Parts supplémentaires :</td>
-                <td>
-                  <input
-                    type="number"
-                    v-model.number="partsSupplementaires"
-                    min="0"
-                    max="5"
-                    step="0.25"
-                    id="partsSupplementaires"
-                    class="form-control form-control-sm"
-                  />
-                </td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Certaines situations (invalide, anciens combattant, ...) peuvent donner droit à des majoration de parts."
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Nombre de parts :</td>
-                <td>
-                  <strong>{{ parts }}</strong>
-                </td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="col-md-5">
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th>Barème</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="b in bareme">
-                <td>{{ b.affichageIntervalle() }}</td>
-                <td>{{ Math.round(b.taux * 100) }}%</td>
-              </tr>
-              <!--
+<body>
+  <header>
+    <div class="navbar navbar-dark bg-dark box-shadow">
+      <div class="container">
+        <strong class="navbar-brand">
+          Simulateur d'impôt sur le revenu
+        </strong>
+      </div>
+    </div>
+  </header>
+
+  <div id="app" class="container">
+    <div class="alert alert-danger" role="alert">
+      Attention : le développement de ce simulateur est en cours, et toutes
+      les règles de calcul de l'impôt ne sont pas encore prises en compte.
+      <br />
+      Pour une estimation plus fiable du montant de votre impôt, reportez vous
+      au
+      <a href="https://www3.impots.gouv.fr/simulateur/calcul_impot/2018/index.htm">
+        simulateur officiel des finances publiques</a>.
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Quotient familial</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Vous déclarez vos impôts :</td>
+              <td>
+                <select class="form-control form-control-sm" v-model.number="etatcivil">
+                  <option value="1">seul</option>
+                  <option value="2">en couple (mariage / PACS)</option>
+                </select>
+              </td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Un couple (marié ou pacsé) faisant une déclaration commune a droit à 2 parts. Dans les autres cas, 1 part."></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Nombre d'enfants à charge :</td>
+              <td>
+                <input type="number" v-model.number="nbEnfants" min="0" max="20" id="nbEnfants" class="form-control form-control-sm" />
+              </td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Les 2 premiers enfants à charge donnent une demi-part chacun. À partir du 3ème, chaque enfant donne droit à une part supplémentaire."></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Parts supplémentaires :</td>
+              <td>
+                <input type="number" v-model.number="partsSupplementaires" min="0" max="5" step="0.25" id="partsSupplementaires"
+                  class="form-control form-control-sm" />
+              </td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Certaines situations (invalide, anciens combattant, ...) peuvent donner droit à des majoration de parts."></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Nombre de parts :</td>
+              <td>
+                <strong>{{ parts }}</strong>
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-5">
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Barème</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="b in bareme">
+              <td>{{ b.affichageIntervalle() }}</td>
+              <td>{{ Math.round(b.taux * 100) }}%</td>
+            </tr>
+            <!--
                 <tr>
                   <td>
                     CSG
@@ -150,350 +109,252 @@
                   <td>{{ tauxCsg * 100 }}%</td>
                 </tr>
               -->
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <div class="row">
-        <div class="col">
-          <table class="table income">
-            <thead>
-              <tr>
-                <th scope="col">Revenus</th>
-                <th class="d-hidden d-md-table-cell"></th>
-                <th colspan="3">
-                  <button
-                    v-if="revenus.length > 0"
-                    class="btn btn-sm btn-primary float-right"
-                    data-toggle="modal"
-                    data-target="#incomeModal"
-                  >
-                    <i class="fas fa-plus"></i> Ajouter des revenus
-                  </button>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-if="revenus.length === 0">
-                <td colspan="5" class="text-center">
-                  <button
-                    class="btn btn-lg btn-primary"
-                    data-toggle="modal"
-                    data-target="#incomeModal"
-                  >
-                    <i class="fas fa-plus"></i> Ajouter des revenus
-                  </button>
-                </td>
-              </tr>
-              <tr v-for="r in revenus">
-                <td>{{ r.libelle }}</td>
-                <td class="d-none d-md-table-cell">
-                  <input
-                    type="range"
-                    v-model.number="r.montant"
-                    min="0"
-                    v-bind:max="r.maxDisplay"
-                    v-bind:step="r.step"
-                    class="form-control-range"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    v-model.number="r.montant"
-                    class="form-control"
-                  />
-                </td>
-                <td>({{ Math.round(r.montant / 12) }}&nbsp;€/mois)</td>
-                <td>
-                  <button
-                    class="btn btn-sm btn-danger"
-                    @click="suppressionRevenus(r)"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <div class="row">
+      <div class="col">
+        <table class="table income">
+          <thead>
+            <tr>
+              <th scope="col">Revenus</th>
+              <th class="d-hidden d-md-table-cell"></th>
+              <th colspan="3">
+                <button v-if="revenus.length > 0" class="btn btn-sm btn-primary float-right" data-toggle="modal"
+                  data-target="#incomeModal">
+                  <i class="fas fa-plus"></i> Ajouter des revenus
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-if="revenus.length === 0">
+              <td colspan="5" class="text-center">
+                <button class="btn btn-lg btn-primary" data-toggle="modal" data-target="#incomeModal">
+                  <i class="fas fa-plus"></i> Ajouter des revenus
+                </button>
+              </td>
+            </tr>
+            <tr v-for="r in revenus">
+              <td>{{ r.libelle }}</td>
+              <td class="d-none d-md-table-cell">
+                <input type="range" v-model.number="r.montant" min="0" v-bind:max="r.maxDisplay" v-bind:step="r.step"
+                  class="form-control-range" />
+              </td>
+              <td>
+                <input type="number" v-model.number="r.montant" class="form-control" />
+              </td>
+              <td>({{ Math.round(r.montant / 12) }}&nbsp;€/mois)</td>
+              <td>
+                <button class="btn btn-sm btn-danger" @click="suppressionRevenus(r)">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <div class="row justify-content-center">
-        <div class="col-8">
-          <table class="table table-dark">
-            <thead>
-              <tr>
-                <th colspan="3">Impôt sur le revenu</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Total des revenus sur l'année</td>
-                <td>{{ revenusTotaux }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Montant net des revenus gagnés au cours de l'année"
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Revenu fiscal de référence</td>
-                <td>{{ totalImposable }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Montant pris en compte pour le calcul de l'impôt"
-                  ></i>
-                </td>
-              </tr>
-              <tr v-if="droitsSimples != montantTotalImpot">
-                <td class="small">Droits simples</td>
-                <td class="small">{{ droitsSimples }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Montant à payer calculé avant réductions"
-                  ></i>
-                </td>
-              </tr>
-              <tr v-if="decote">
-                <td class="small">Décote</td>
-                <td class="small">-{{ decote }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Diminution de l'impot lorsque le montant brut ne dépasse pas 1569€ (imposition individuelle) ou 2585€ (couple - imposition commune)"
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Impôt sur le revenu net</td>
-                <td>{{ montantTotalImpot }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Montant total à payer pour l'impôt sur le revenu"
-                  ></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table class="table table-dark" v-if="montantTotalCsg > 0">
-            <thead>
-              <tr>
-                <th colspan="3">Prélèvements sociaux</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Base prélèvements sociaux</td>
-                <td>{{ totalImposableCsg }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Montant pris en compte pour le calcul des prélèvements sociaux"
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Taux prélèvements sociaux</td>
-                <td>{{ tauxCsg * 100 }} %</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Taux de prélèvements"
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Montant prélèvements sociaux</td>
-                <td>{{ montantTotalCsg }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Montant total à payer pour les prélèvements sociaux"
-                  ></i>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="row justify-content-center">
+      <div class="col-8">
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th colspan="3">Impôt sur le revenu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Total des revenus sur l'année</td>
+              <td>{{ revenusTotaux }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant net des revenus gagnés au cours de l'année"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Revenu fiscal de référence</td>
+              <td>{{ totalImposable }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant pris en compte pour le calcul de l'impôt"></i>
+              </td>
+            </tr>
+            <tr v-if="droitsSimples != montantTotalImpot">
+              <td class="small">Droits simples</td>
+              <td class="small">{{ droitsSimples }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant à payer calculé avant réductions"></i>
+              </td>
+            </tr>
+            <tr v-if="decote">
+              <td class="small">Décote</td>
+              <td class="small">-{{ decote }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Diminution de l'impot lorsque le montant brut est inférieur à un certain seuil"></i>
+              </td>
+            </tr>
+            <tr v-if="allegement">
+              <td class="small">Allégement sous conditions de ressources</td>
+              <td class="small">-{{ allegement }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Allègement de l'impôt lorsque le revenu fiscal de référence est inférieur à un certain seuil"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Impôt sur le revenu net</td>
+              <td>{{ montantTotalImpot }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant total à payer pour l'impôt sur le revenu"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-dark" v-if="montantTotalCsg > 0">
+          <thead>
+            <tr>
+              <th colspan="3">Prélèvements sociaux</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Base prélèvements sociaux</td>
+              <td>{{ totalImposableCsg }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant pris en compte pour le calcul des prélèvements sociaux"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Taux prélèvements sociaux</td>
+              <td>{{ tauxCsg * 100 }} %</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Taux de prélèvements"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Montant prélèvements sociaux</td>
+              <td>{{ montantTotalCsg }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant total à payer pour les prélèvements sociaux"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-          <table class="table table-dark">
-            <thead>
-              <tr>
-                <th colspan="3">Bilan</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Montant net à payer</td>
-                <td>{{ montantTotalImpot + montantTotalCsg }} €</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Total de tous les impôts à payer"
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Taux marginal d'imposition</td>
-                <td>{{ tauxMarginal }} %</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Taux d'imposition de la dernière tranche du revenu"
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Taux de prélèvement</td>
-                <td>{{ pourcentagePrelevement.toFixed(1) }} %</td>
-                <td>
-                  <i
-                    class="far fa-question-circle"
-                    data-toggle="tooltip"
-                    data-placement="right"
-                    title="Taux d'imposition moyen sur l'ensemble des revenus"
-                  ></i>
-                </td>
-              </tr>
-              <tr>
-                <td>Revenus mensuels moyens net</td>
-                <td>{{ (revenusTotaux / 12).toFixed(0) }} €</td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>Prélèvement à la source (estimation)</td>
-                <td>
-                  {{
-                    ((montantTotalImpot + montantTotalCsg) / 12).toFixed(0)
-                  }}
-                  €
-                </td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>Revenu mensuel après impôt</td>
-                <td>
-                  {{
-                    (
-                      (revenusTotaux - (montantTotalImpot + montantTotalCsg)) /
-                      12
-                    ).toFixed(0)
-                  }}
-                  €
-                </td>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th colspan="3">Bilan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Montant net à payer</td>
+              <td>{{ montantTotalImpot + montantTotalCsg }} €</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Total de tous les impôts à payer"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Taux marginal d'imposition</td>
+              <td>{{ tauxMarginal }} %</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Taux d'imposition de la dernière tranche du revenu"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Taux de prélèvement</td>
+              <td>{{ pourcentagePrelevement.toFixed(1) }} %</td>
+              <td>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Taux d'imposition moyen sur l'ensemble des revenus"></i>
+              </td>
+            </tr>
+            <tr>
+              <td>Revenus mensuels moyens net</td>
+              <td>{{ (revenusTotaux / 12).toFixed(0) }} €</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Prélèvement à la source (estimation)</td>
+              <td>
+                {{
+                ((montantTotalImpot + montantTotalCsg) / 12).toFixed(0)
+                }}
+                €
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Revenu mensuel après impôt</td>
+              <td>
+                {{
+                (
+                (revenusTotaux - (montantTotalImpot + montantTotalCsg)) /
+                12
+                ).toFixed(0)
+                }}
+                €
+              </td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <hr />
-      <footer>
-        <p>
-          Code source disponible sur
-          <a href="https://github.com/glacasa/simulateur-impots">Github</a>
-        </p>
-      </footer>
+    <hr />
+    <footer>
+      <p>
+        Code source disponible sur
+        <a href="https://github.com/glacasa/simulateur-impots">Github</a>
+      </p>
+    </footer>
 
-      <!-- Ajout de revenus -->
-      <div class="modal fade" id="incomeModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Ajouter des revenus</h5>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+    <!-- Ajout de revenus -->
+    <div class="modal fade" id="incomeModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ajouter des revenus</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="selectTypeRevenu">Type de revenus</label>
+              <select id="selectTypeRevenu" class="form-control form-control-sm" v-model="typeNouveauRevenu">
+                <option value="salaire">Salaire</option>
+                <option value="foncier">Foncier</option>
+                <option value="dividende">Dividendes</option>
+              </select>
             </div>
-            <div class="modal-body">
-              <div class="form-group">
-                <label for="selectTypeRevenu">Type de revenus</label>
-                <select
-                  id="selectTypeRevenu"
-                  class="form-control form-control-sm"
-                  v-model="typeNouveauRevenu"
-                >
-                  <option value="salaire">Salaire</option>
-                  <option value="foncier">Foncier</option>
-                  <option value="dividende">Dividendes</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="libelleRevenu">Libellé</label>
-                <input
-                  id="libelleRevenu"
-                  type="text"
-                  class="form-control form-control-sm"
-                  v-model="nouveauRevenu.libelle"
-                />
-              </div>
-              <div class="form-group">
-                <label for="montantRevenu">Montant</label>
-                <input
-                  id="montantRevenu"
-                  type="number"
-                  class="form-control form-control-sm"
-                  v-model.number="nouveauRevenu.montant"
-                />
-              </div>
+            <div class="form-group">
+              <label for="libelleRevenu">Libellé</label>
+              <input id="libelleRevenu" type="text" class="form-control form-control-sm" v-model="nouveauRevenu.libelle" />
             </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Annuler
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-dismiss="modal"
-                @click="ajoutRevenus"
-              >
-                Ajouter
-              </button>
+            <div class="form-group">
+              <label for="montantRevenu">Montant</label>
+              <input id="montantRevenu" type="number" class="form-control form-control-sm" v-model.number="nouveauRevenu.montant" />
             </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+              Annuler
+            </button>
+            <button type="button" class="btn btn-primary" data-dismiss="modal" @click="ajoutRevenus">
+              Ajouter
+            </button>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="bootstrap/jquery-3.3.1.min.js"></script>
-    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="vue/vue.js"></script>
-    <script src="revenus.js"></script>
-    <script src="impots.js"></script>
-  </body>
+  <script src="vue/vue.js"></script>
+  <script src="revenus.js"></script>
+  <script src="impots.js"></script>
+</body>
+
 </html>
