@@ -1,36 +1,46 @@
 class Revenu {
-  constructor(libelle, montant, abattement, csg) {
+  constructor(libelle, montant, abattement) {
     this.libelle = libelle;
     this.montant = montant;
     this.abattement = abattement;
-    this.csg = csg;
 
     this.maxDisplay = 120000;
-    this.step=600;
+    this.step = 600;
   }
 
-  montantImposable() {
+  assietteIR() {
     return Math.round(this.montant * (1 - this.abattement));
+  }
+
+  assietteCSG() {
+    return 0;
   }
 }
 
 class Salaire extends Revenu {
   constructor(montant) {
-    let a = {};
-    super("Revenu d'activité", montant, 0.1, false);
+    super("Revenu d'activité", montant, 0.1);
   }
 }
 
 class Foncier extends Revenu {
   constructor(montant) {
-    super("Revenu foncier", montant, 0.3, true);
+    super("Revenu foncier", montant, 0.3);
     this.maxDisplay = 15000;
+  }
+
+  assietteCSG() {
+    return Math.round(this.montant * (1 - this.abattement));
   }
 }
 
 class Dividende extends Revenu {
   constructor(montant) {
-    super("Dividendes", montant, 0.4, true);
-    this.step=500;
+    super("Dividendes", montant, 0.4);
+    this.step = 500;
+  }
+
+  assietteCSG() {
+    return Math.round(this.montant);
   }
 }

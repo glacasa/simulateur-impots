@@ -85,7 +85,7 @@ var app = new Vue({
     totalImposable: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
-        total += this.revenus[i].montantImposable();
+        total += this.revenus[i].assietteIR();
       }
       return total;
     },
@@ -93,9 +93,7 @@ var app = new Vue({
     totalImposableCsg: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
-        if (this.revenus[i].csg) {
-          total += this.revenus[i].montantImposable();
-        }
+        total += this.revenus[i].assietteCSG();
       }
       return total;
     },
