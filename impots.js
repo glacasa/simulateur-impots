@@ -165,7 +165,7 @@ var app = new Vue({
 
       return 0;
     },
-    montantTotalImpot() {
+    montantTotalIR() {
       // https://www.service-public.fr/particuliers/vosdroits/F34328
       let montant = this.droitsSimples;
 
@@ -185,11 +185,29 @@ var app = new Vue({
       return Math.round(this.totalImposableCsg * this.tauxCsg);
     },
 
+    impotsForfaitaires() {
+      let impots = [];
+      impots.total = 0;
+      for (let i = 0; i < this.revenus.length; i++) {
+        let forfaitaire = this.revenus[i].montantImpotForfaitaire();
+        if (forfaitaire > 0) {
+          impots.push(this.revenus[i]);
+          impots.total += forfaitaire;
+        }
+      }
+
+      return impots;
+    },
+
+    montantTotalImpots() {
+      return this.montantTotalIR + this.montantTotalCsg + this.impotsForfaitaires.total;
+    },
+
     pourcentagePrelevement() {
       if (!this.revenusTotaux) {
         return 0;
       }
-      return (this.montantTotalImpot / this.revenusTotaux) * 100;
+      return ((this.montantTotalImpots) / this.revenusTotaux) * 100;
     }
   },
   watch: {

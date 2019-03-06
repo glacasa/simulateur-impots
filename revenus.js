@@ -3,6 +3,7 @@ class Revenu {
     this.libelle = libelle;
     this.montant = montant;
     this.abattement = abattement;
+    this.optionName = null;
 
     this.maxDisplay = 360000;
     this.step = 600;
@@ -13,6 +14,10 @@ class Revenu {
   }
 
   assietteCSG() {
+    return 0;
+  }
+
+  montantImpotForfaitaire() {
     return 0;
   }
 }
@@ -35,12 +40,35 @@ class Foncier extends Revenu {
 }
 
 class Dividende extends Revenu {
+
   constructor(montant) {
     super("Dividendes", montant, 0.4);
     this.step = 500;
+    this.optionName = "Flat tax";
+    this.option = true;
+  }
+
+  assietteIR() {
+    if (this.option) {
+      return 0;
+    }
+
+    return super.assietteIR();
   }
 
   assietteCSG() {
+    if (this.option) {
+      return 0;
+    }
+
     return Math.round(this.montant);
+  }
+
+  montantImpotForfaitaire() {
+    if (this.option) {
+      return Math.round(this.montant * 0.3);
+    }
+
+    return 0;
   }
 }

@@ -11,8 +11,8 @@
 </head>
 
 <body>
-  <a href="https://github.com/glacasa/simulateur-impots" style="position: absolute; z-index: 1;"><img width="149" height="149"
-      src="https://github.blog/wp-content/uploads/2008/12/forkme_left_red_aa0000.png?resize=149%2C149"
+  <a href="https://github.com/glacasa/simulateur-impots" style="position: absolute; z-index: 1;"><img width="149"
+      height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_left_red_aa0000.png?resize=149%2C149"
       class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
 
   <header>
@@ -59,26 +59,30 @@
                 </select>
               </td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Un couple (marié ou pacsé) faisant une déclaration commune a droit à 2 parts. Dans les autres cas, 1 part."></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Un couple (marié ou pacsé) faisant une déclaration commune a droit à 2 parts. Dans les autres cas, 1 part."></i>
               </td>
             </tr>
             <tr>
               <td>Nombre d'enfants à charge :</td>
               <td>
-                <input type="number" v-model.number="nbEnfants" min="0" max="20" id="nbEnfants" class="form-control form-control-sm" />
+                <input type="number" v-model.number="nbEnfants" min="0" max="20" id="nbEnfants"
+                  class="form-control form-control-sm" />
               </td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Les 2 premiers enfants à charge donnent une demi-part chacun. À partir du 3ème, chaque enfant donne droit à une part supplémentaire."></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Les 2 premiers enfants à charge donnent une demi-part chacun. À partir du 3ème, chaque enfant donne droit à une part supplémentaire."></i>
               </td>
             </tr>
             <tr>
               <td>Parts supplémentaires :</td>
               <td>
-                <input type="number" v-model.number="partsSupplementaires" min="0" max="5" step="0.25" id="partsSupplementaires"
-                  class="form-control form-control-sm" />
+                <input type="number" v-model.number="partsSupplementaires" min="0" max="5" step="0.25"
+                  id="partsSupplementaires" class="form-control form-control-sm" />
               </td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Certaines situations (invalide, anciens combattant, ...) peuvent donner droit à des majoration de parts."></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Certaines situations (invalide, anciens combattant, ...) peuvent donner droit à des majoration de parts."></i>
               </td>
             </tr>
             <tr>
@@ -135,7 +139,7 @@
           </thead>
           <tbody>
             <tr v-if="revenus.length === 0">
-              <td colspan="5" class="text-center">
+              <td colspan="6" class="text-center">
                 <button class="btn btn-lg btn-primary" data-toggle="modal" data-target="#incomeModal">
                   <i class="fas fa-plus"></i> Ajouter des revenus
                 </button>
@@ -175,42 +179,48 @@
               <td>Total des revenus sur l'année</td>
               <td>{{ revenusTotaux }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant net des revenus gagnés au cours de l'année"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Montant net des revenus gagnés au cours de l'année"></i>
               </td>
             </tr>
             <tr>
               <td>Revenu fiscal de référence</td>
               <td>{{ totalImposable }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant pris en compte pour le calcul de l'impôt"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Montant pris en compte pour le calcul de l'impôt"></i>
               </td>
             </tr>
-            <tr v-if="droitsSimples != montantTotalImpot">
+            <tr v-if="droitsSimples != montantTotalIR">
               <td class="small">Droits simples</td>
               <td class="small">{{ droitsSimples }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant à payer calculé avant réductions"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Montant à payer calculé avant réductions"></i>
               </td>
             </tr>
             <tr v-if="decote">
               <td class="small">Décote</td>
               <td class="small">-{{ decote }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Diminution de l'impot lorsque le montant brut est inférieur à un certain seuil"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Diminution de l'impot lorsque le montant brut est inférieur à un certain seuil"></i>
               </td>
             </tr>
             <tr v-if="allegement">
               <td class="small">Allégement sous conditions de ressources</td>
               <td class="small">-{{ allegement }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Allègement de l'impôt lorsque le revenu fiscal de référence est inférieur à un certain seuil"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Allègement de l'impôt lorsque le revenu fiscal de référence est inférieur à un certain seuil"></i>
               </td>
             </tr>
             <tr>
               <td>Impôt sur le revenu net</td>
-              <td>{{ montantTotalImpot }} €</td>
+              <td>{{ montantTotalIR }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant total à payer pour l'impôt sur le revenu"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Montant total à payer pour l'impôt sur le revenu"></i>
               </td>
             </tr>
           </tbody>
@@ -226,22 +236,45 @@
               <td>Base prélèvements sociaux</td>
               <td>{{ totalImposableCsg }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant pris en compte pour le calcul des prélèvements sociaux"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Montant pris en compte pour le calcul des prélèvements sociaux"></i>
               </td>
             </tr>
             <tr>
               <td>Taux prélèvements sociaux</td>
               <td>{{ tauxCsg * 100 }} %</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Taux de prélèvements"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Taux de prélèvements"></i>
               </td>
             </tr>
             <tr>
               <td>Montant prélèvements sociaux</td>
               <td>{{ montantTotalCsg }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Montant total à payer pour les prélèvements sociaux"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Montant total à payer pour les prélèvements sociaux"></i>
               </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="table table-dark" v-if="impotsForfaitaires.total">
+          <thead>
+            <tr>
+              <th colspan="3">Prélèvements forfaitaires</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="i in impotsForfaitaires">
+              <td>{{ i.libelle }} - {{ i.optionName }}</td>
+              <td>{{ i.montantImpotForfaitaire() }} €</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>
+                {{ impotsForfaitaires.total }} €</td>
+              <td></td>
             </tr>
           </tbody>
         </table>
@@ -255,23 +288,26 @@
           <tbody>
             <tr>
               <td>Montant net à payer</td>
-              <td>{{ montantTotalImpot + montantTotalCsg }} €</td>
+              <td>{{ montantTotalIR + montantTotalCsg + impotsForfaitaires.total }} €</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Total de tous les impôts à payer"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Total de tous les impôts à payer"></i>
               </td>
             </tr>
             <tr>
               <td>Taux marginal d'imposition</td>
               <td>{{ tauxMarginal }} %</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Taux d'imposition de la dernière tranche du revenu"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Taux d'imposition de la dernière tranche du revenu"></i>
               </td>
             </tr>
             <tr>
               <td>Taux de prélèvement</td>
               <td>{{ pourcentagePrelevement.toFixed(1) }} %</td>
               <td>
-                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right" title="Taux d'imposition moyen sur l'ensemble des revenus"></i>
+                <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
+                  title="Taux d'imposition moyen sur l'ensemble des revenus"></i>
               </td>
             </tr>
             <tr>
@@ -283,7 +319,7 @@
               <td>Prélèvement à la source (estimation)</td>
               <td>
                 {{
-                ((montantTotalImpot + montantTotalCsg) / 12).toFixed(0)
+                ((montantTotalIR + montantTotalCsg) / 12).toFixed(0)
                 }}
                 €
               </td>
@@ -294,7 +330,7 @@
               <td>
                 {{
                 (
-                (revenusTotaux - (montantTotalImpot + montantTotalCsg)) /
+                (revenusTotaux - (montantTotalIR + montantTotalCsg)) /
                 12
                 ).toFixed(0)
                 }}
@@ -336,11 +372,13 @@
             </div>
             <div class="form-group">
               <label for="libelleRevenu">Libellé</label>
-              <input id="libelleRevenu" type="text" class="form-control form-control-sm" v-model="nouveauRevenu.libelle" />
+              <input id="libelleRevenu" type="text" class="form-control form-control-sm"
+                v-model="nouveauRevenu.libelle" />
             </div>
             <div class="form-group">
               <label for="montantRevenu">Montant</label>
-              <input id="montantRevenu" type="number" class="form-control form-control-sm" v-model.number="nouveauRevenu.montant" />
+              <input id="montantRevenu" type="number" class="form-control form-control-sm"
+                v-model.number="nouveauRevenu.montant" />
             </div>
           </div>
           <div class="modal-footer">
@@ -355,7 +393,7 @@
       </div>
     </div>
   </div>
-  
+
   <script src="bootstrap/jquery-3.3.1.min.js"></script>
   <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="vue/vue.js"></script>
