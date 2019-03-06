@@ -4,7 +4,7 @@ class Revenu {
     this.montant = montant;
     this.abattement = abattement;
 
-    this.maxDisplay = 120000;
+    this.maxDisplay = 360000;
     this.step = 600;
   }
 
