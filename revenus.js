@@ -72,3 +72,10 @@ class Dividende extends Revenu {
     return 0;
   }
 }
+
+class MicroEntrepriseLiberal extends Revenu {
+  constructor(montant) {
+    super("Micro-entrepreneur", montant, 0.34);
+    this.maxDisplay = 70000;
+  }
+}

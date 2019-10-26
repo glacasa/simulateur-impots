@@ -240,6 +240,8 @@ var app = new Vue({
           return new Foncier(montant);
         case "dividende":
           return new Dividende(montant);
+        case "microentrepriseliberal":
+          return new MicroEntrepriseLiberal(montant);
       }
       throw "Type de revenus inconnu";
     },
