@@ -128,8 +128,7 @@
           <thead>
             <tr>
               <th scope="col">Revenus</th>
-              <th class="d-hidden d-md-table-cell"></th>
-              <th colspan="3">
+              <th colspan="4">
                 <button v-if="revenus.length > 0" class="btn btn-sm btn-primary float-right" data-toggle="modal"
                   data-target="#incomeModal">
                   <i class="fas fa-plus"></i> Ajouter des revenus
@@ -147,14 +146,14 @@
             </tr>
             <tr v-for="r in revenus">
               <td>{{ r.libelle }}</td>
-              <td class="d-none d-md-table-cell">
+              <td class="d-none d-lg-table-cell">
                 <input type="range" v-model.number="r.montant" min="0" v-bind:max="r.maxDisplay" v-bind:step="r.step"
                   class="form-control-range" />
               </td>
               <td>
                 <input type="number" v-model.number="r.montant" class="form-control" />
               </td>
-              <td>({{ Math.round(r.montant / 12) }}&nbsp;€/mois)</td>
+              <td class="d-none d-md-table-cell">({{ Math.round(r.montant / 12) }}&nbsp;€/mois)</td>
               <td>
                 <button class="btn btn-sm btn-danger" @click="suppressionRevenus(r)">
                   <i class="fas fa-trash-alt"></i>
