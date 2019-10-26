@@ -104,6 +104,14 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>Année :</td>
+              <td>
+                <select class="form-control" v-model="bareme">
+                  <option v-for="a in anciensBaremes" v-bind:value="a.bareme">{{a.annee}}</option>
+                </select>
+              </td>
+            </tr>
             <tr v-for="b in bareme">
               <td>{{ b.affichageIntervalle() }}</td>
               <td>{{ Math.round(b.taux * 100) }}%</td>

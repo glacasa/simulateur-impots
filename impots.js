@@ -16,6 +16,35 @@ class Bareme {
   }
 }
 
+var listeBaremes = {
+  // Barème sur les revenus de 2017
+  2017: [
+    new Bareme(0, 9807, 0),
+    new Bareme(9808, 27086, 0.14),
+    new Bareme(27087, 72617, 0.3),
+    new Bareme(72618, 153783, 0.41),
+    new Bareme(153784, Number.MAX_VALUE, 0.45)
+  ],
+  2018: [
+    // https://www.service-public.fr/particuliers/vosdroits/F1419
+    new Bareme(0, 9964, 0),
+    new Bareme(9965, 27519, 0.14),
+    new Bareme(27520, 73779, 0.3),
+    new Bareme(73780, 156244, 0.41),
+    new Bareme(156245, Number.MAX_VALUE, 0.45)
+  ],
+  // PLF 2020, sous réserve du vote par le parlement
+  // http://www.assemblee-nationale.fr/15/projets/pl2272.asp
+  2019: [
+    new Bareme(0, 10064, 0),
+    new Bareme(10065, 25659, 0.11),
+    new Bareme(25660, 73369, 0.3),
+    new Bareme(73370, 157806, 0.41),
+    new Bareme(157807, Number.MAX_VALUE, 0.45)
+  ]
+};
+
+
 var app = new Vue({
   el: "#app",
   data: {
@@ -34,15 +63,13 @@ var app = new Vue({
     nouveauRevenu: new Salaire(0),
 
     // taux d'imposition et plafonds
-    bareme: [
-      // Barème 2019
-      // https://www.service-public.fr/particuliers/vosdroits/F1419
-      new Bareme(0, 9964, 0),
-      new Bareme(9965, 27519, 0.14),
-      new Bareme(27520, 73779, 0.3),
-      new Bareme(73780, 156244, 0.41),
-      new Bareme(156245, Number.MAX_VALUE, 0.45)
+    bareme: listeBaremes[2019],
+    anciensBaremes: [
+      {annee: 2017, bareme: listeBaremes[2017] },
+      {annee: 2018, bareme: listeBaremes[2018] },
+      {annee: 2019, bareme: listeBaremes[2019] },
     ],
+
     montantsSpeciaux: {
       plafondQfParDemiPartSup: 1551,
       decoteCouple: {
