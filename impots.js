@@ -76,6 +76,7 @@ var app = new Vue({
       {annee: 2017, bareme: listeBaremes[2017] },
       {annee: 2018, bareme: listeBaremes[2018] },
       {annee: 2019, bareme: listeBaremes[2019] },
+      {annee: 2020, bareme: listeBaremes[2020] }
     ],
 
     montantsSpeciaux: {
