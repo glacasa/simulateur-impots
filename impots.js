@@ -37,6 +37,14 @@ var listeBaremes = {
   // http://www.assemblee-nationale.fr/15/projets/pl2272.asp
   2019: [
     new Bareme(0, 10064, 0),
+    new Bareme(10065, 27794, 0.14),
+    new Bareme(27795, 74517, 0.3),
+    new Bareme(74518, 157806, 0.41),
+    new Bareme(157807, Number.MAX_VALUE, 0.45)
+  ],
+  // barème 2020 ?
+  2020: [
+    new Bareme(0, 10064, 0),
     new Bareme(10065, 25659, 0.11),
     new Bareme(25660, 73369, 0.3),
     new Bareme(73370, 157806, 0.41),
