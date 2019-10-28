@@ -13,6 +13,10 @@ class Revenu {
     return Math.round(this.montant * (1 - this.abattement));
   }
 
+  revenuReference() {
+    return this.assietteIR();
+  }
+
   assietteCSG() {
     return 0;
   }
@@ -44,8 +48,8 @@ class Dividende extends Revenu {
   constructor(montant) {
     super("Dividendes", montant, 0.4);
     this.step = 500;
-    this.optionName = "Flat tax";
-    this.option = true;
+    this.optionName = "PFU";
+    this.option = false;
   }
 
   assietteIR() {
@@ -54,6 +58,14 @@ class Dividende extends Revenu {
     }
 
     return super.assietteIR();
+  }
+
+  revenuReference() {
+    if (this.option) {
+      return Math.round(this.montant);
+    }
+    
+    return super.revenuReference();
   }
 
   assietteCSG() {

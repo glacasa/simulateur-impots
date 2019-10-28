@@ -126,6 +126,14 @@ var app = new Vue({
       return total;
     },
 
+    revenuFiscalReference: function(){
+      let total = 0;
+      for (let i = 0; i < this.revenus.length; i++) {
+        total += this.revenus[i].revenuReference();
+      }
+      return total;
+    },
+
     totalImposableCsg: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
@@ -188,14 +196,14 @@ var app = new Vue({
       let revenuMaxDegressif = this.montantsSpeciaux.allegementsIndiv.revenuMaxAllegementDegressif * this.etatcivil;
       revenuMaxDegressif += this.montantsSpeciaux.allegementsIndiv.augmentationSeuilParPart * (this.parts - this.etatcivil);
 
-      if (this.totalImposable <= revenuMaxDegressif) {
+      if (this.revenuFiscalReference <= revenuMaxDegressif) {
         let allegementComplet = montant * 0.2;
         let revenuMaxComplet = this.montantsSpeciaux.allegementsIndiv.revenuMaxAllegementComplet * this.etatcivil;
-        if (this.totalImposable <= revenuMaxComplet) {
+        if (this.revenuFiscalReference <= revenuMaxComplet) {
           return Math.round(allegementComplet);
         }
         else {
-          return Math.round(allegementComplet * ((revenuMaxDegressif - this.totalImposable) / (revenuMaxDegressif - revenuMaxComplet)));
+          return Math.round(allegementComplet * ((revenuMaxDegressif - this.revenuFiscalReference) / (revenuMaxDegressif - revenuMaxComplet)));
         }
       }
 

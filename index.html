@@ -163,6 +163,12 @@
               </td>
               <td class="d-none d-md-table-cell">({{ Math.round(r.montant / 12) }}&nbsp;€/mois)</td>
               <td>
+                <label v-if="r.optionName">
+                  <input type="checkbox" v-model="r.option" />
+                  {{r.optionName}}
+                </label>
+              </td>
+              <td>
                 <button class="btn btn-sm btn-danger" @click="suppressionRevenus(r)">
                   <i class="fas fa-trash-alt"></i>
                 </button>
@@ -192,7 +198,7 @@
             </tr>
             <tr>
               <td>Revenu fiscal de référence</td>
-              <td>{{ totalImposable }} €</td>
+              <td>{{ revenuFiscalReference }} €</td>
               <td>
                 <i class="far fa-question-circle" data-toggle="tooltip" data-placement="right"
                   title="Montant pris en compte pour le calcul de l'impôt"></i>
