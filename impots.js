@@ -114,7 +114,7 @@ var app = new Vue({
     revenusTotaux: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
-        total += this.revenus[i].montant;
+        total += this.revenus[i].montant - this.revenus[i].montantImpotForfaitaire();
       }
       return total;
     },
