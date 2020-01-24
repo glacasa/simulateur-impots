@@ -108,8 +108,8 @@
             <tr>
               <td>Année :</td>
               <td>
-                <select class="form-control" v-model="bareme">
-                  <option v-for="a in anciensBaremes" v-bind:value="a.bareme">{{a.annee}}</option>
+                <select class="form-control" v-model="annee">
+                  <option v-for="a in listeAnnees" v-bind:value="a">{{a}}</option>
                 </select>
               </td>
             </tr>

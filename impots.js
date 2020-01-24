@@ -16,46 +16,100 @@ class Bareme {
   }
 }
 
-var listeBaremes = {
-  // Barème sur les revenus de 2017
-  2017: [
-    new Bareme(0, 9807, 0),
-    new Bareme(9808, 27086, 0.14),
-    new Bareme(27087, 72617, 0.3),
-    new Bareme(72618, 153783, 0.41),
-    new Bareme(153784, Number.MAX_VALUE, 0.45)
-  ],
-  2018: [
-    // https://www.service-public.fr/particuliers/vosdroits/F1419
-    new Bareme(0, 9964, 0),
-    new Bareme(9965, 27519, 0.14),
-    new Bareme(27520, 73779, 0.3),
-    new Bareme(73780, 156244, 0.41),
-    new Bareme(156245, Number.MAX_VALUE, 0.45)
-  ],
-  // PLF 2020, sous réserve du vote par le parlement
-  // http://www.assemblee-nationale.fr/15/projets/pl2272.asp
-  2019: [
-    new Bareme(0, 10064, 0),
-    new Bareme(10065, 27794, 0.14),
-    new Bareme(27795, 74517, 0.3),
-    new Bareme(74518, 157806, 0.41),
-    new Bareme(157807, Number.MAX_VALUE, 0.45)
-  ],
-  // barème 2020 ?
-  2020: [
-    new Bareme(0, 10064, 0),
-    new Bareme(10065, 25659, 0.11),
-    new Bareme(25660, 73369, 0.3),
-    new Bareme(73370, 157806, 0.41),
-    new Bareme(157807, Number.MAX_VALUE, 0.45)
-  ]
+var infoAnnees = {
+  2019: {
+    bareme: [
+      new Bareme(0, 10064, 0),
+      new Bareme(10065, 27794, 0.14),
+      new Bareme(27795, 74517, 0.3),
+      new Bareme(74518, 157806, 0.41),
+      new Bareme(157807, Number.MAX_VALUE, 0.45)
+    ],
+    plafondQfParDemiPartSup: 1551,
+    decote: function (montant, etatcivil) {
+      let impotMax = 0;
+      let baseCalcul = 0;
+      if (etatcivil === 1) {
+        impotMax = 1611;
+        baseCalcul = 1208;
+      }
+      else {
+        impotMax = 2653;
+        baseCalcul = 1990;
+      }
+
+      let decote = 0;
+      if (montant <= impotMax) {
+        decote = baseCalcul - montant * 0.75;
+      }
+
+      return Math.min(Math.round(decote), montant);
+    },
+    allegement: function (montant, revenuFiscalReference, etatcivil, parts) {
+      let allegementsIndiv = {
+        revenuMaxAllegementDegressif: 21248,
+        revenuMaxAllegementComplet: 19175,
+        augmentationSeuilParPart: 3835 * 2
+      };
+
+      let revenuMaxDegressif = allegementsIndiv.revenuMaxAllegementDegressif * etatcivil;
+      revenuMaxDegressif += allegementsIndiv.augmentationSeuilParPart * (parts - etatcivil);
+
+      if (revenuFiscalReference <= revenuMaxDegressif) {
+        let allegementComplet = montant * 0.2;
+        let revenuMaxComplet = allegementsIndiv.revenuMaxAllegementComplet * etatcivil;
+        if (this.revenuFiscalReference <= revenuMaxComplet) {
+          return Math.round(allegementComplet);
+        }
+        else {
+          return Math.round(allegementComplet * ((revenuMaxDegressif - revenuFiscalReference) / (revenuMaxDegressif - revenuMaxComplet)));
+        }
+      }
+
+      return 0;
+    }
+  },
+  2020: {
+    bareme: [
+      new Bareme(0, 10064, 0),
+      new Bareme(10065, 25659, 0.11),
+      new Bareme(25660, 73369, 0.3),
+      new Bareme(73370, 157806, 0.41),
+      new Bareme(157807, Number.MAX_VALUE, 0.45)
+    ],
+    plafondQfParDemiPartSup: 1567,
+    decote: function (montant, etatcivil) {
+      let impotMax = 0;
+      let baseCalcul = 0;
+      if (etatcivil === 1) {
+        impotMax = 1611;
+        baseCalcul = 1208;
+      }
+      else {
+        impotMax = 2653;
+        baseCalcul = 1990;
+      }
+
+      let decote = 0;
+      if (montant <= impotMax) {
+        decote = baseCalcul - montant * 0.75;
+      }
+
+      return Math.min(Math.round(decote), montant);
+    },
+    allegement: function () {
+      return 0;
+    }
+  }
 };
 
 
 var app = new Vue({
   el: "#app",
   data: {
+    annee: 2020,
+    listeAnnees: Object.keys(infoAnnees),
+
     //Calcul du nombre de parts
     // https://www.service-public.fr/particuliers/vosdroits/F2702
     // https://www.service-public.fr/particuliers/vosdroits/F2705
@@ -70,36 +124,18 @@ var app = new Vue({
     typeNouveauRevenu: "salaire",
     nouveauRevenu: new Salaire(0),
 
-    // taux d'imposition et plafonds
-    bareme: listeBaremes[2019],
-    anciensBaremes: [
-      {annee: 2017, bareme: listeBaremes[2017] },
-      {annee: 2018, bareme: listeBaremes[2018] },
-      {annee: 2019, bareme: listeBaremes[2019] },
-      {annee: 2020, bareme: listeBaremes[2020] }
-    ],
-
-    montantsSpeciaux: {
-      plafondQfParDemiPartSup: 1551,
-      decoteCouple: {
-        impotMax: 2627,
-        baseCalcul: 1970,
-      },
-      decoteIndiv: {
-        impotMax: 1595,
-        baseCalcul: 1196,
-      },
-      allegementsIndiv: {
-        revenuMaxAllegementDegressif: 21036,
-        revenuMaxAllegementComplet: 18984,
-        augmentationSeuilParPart: 3797 * 2
-      },
-    },
-
     // https://www.service-public.fr/particuliers/vosdroits/F2329
     tauxCsg: 0.172
   },
   computed: {
+    // taux d'imposition et plafonds
+    bareme: function () {
+      return infoAnnees[this.annee].bareme;
+    },
+    infoCalcul: function () {
+      return infoAnnees[this.annee];
+    },
+
     parts: function () {
       var partsEnfants = 0;
       if (this.nbEnfants <= 2) {
@@ -126,7 +162,7 @@ var app = new Vue({
       return total;
     },
 
-    revenuFiscalReference: function(){
+    revenuFiscalReference: function () {
       let total = 0;
       for (let i = 0; i < this.revenus.length; i++) {
         total += this.revenus[i].revenuReference();
@@ -177,37 +213,12 @@ var app = new Vue({
       // }
     },
     decote() {
-      let montant = this.droitsSimples;
-
-      let calculDecote = this.etatcivil === 1
-        ? this.montantsSpeciaux.decoteIndiv
-        : this.montantsSpeciaux.decoteCouple;
-
-      let decote = 0;
-      if (montant <= calculDecote.impotMax) {
-        decote = calculDecote.baseCalcul - montant * 0.75;
-      }
-
-      return Math.min(Math.round(decote), montant);
+      return this.infoCalcul.decote(this.droitsSimples, this.etatcivil);
     },
     allegement() {
       let montant = this.droitsSimples - this.decote;
 
-      let revenuMaxDegressif = this.montantsSpeciaux.allegementsIndiv.revenuMaxAllegementDegressif * this.etatcivil;
-      revenuMaxDegressif += this.montantsSpeciaux.allegementsIndiv.augmentationSeuilParPart * (this.parts - this.etatcivil);
-
-      if (this.revenuFiscalReference <= revenuMaxDegressif) {
-        let allegementComplet = montant * 0.2;
-        let revenuMaxComplet = this.montantsSpeciaux.allegementsIndiv.revenuMaxAllegementComplet * this.etatcivil;
-        if (this.revenuFiscalReference <= revenuMaxComplet) {
-          return Math.round(allegementComplet);
-        }
-        else {
-          return Math.round(allegementComplet * ((revenuMaxDegressif - this.revenuFiscalReference) / (revenuMaxDegressif - revenuMaxComplet)));
-        }
-      }
-
-      return 0;
+      return this.infoCalcul.allegement(montant, this.revenuFiscalReference, this.etatcivil, this.parts);
     },
     montantTotalIR() {
       // https://www.service-public.fr/particuliers/vosdroits/F34328
