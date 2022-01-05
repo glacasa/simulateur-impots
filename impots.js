@@ -71,28 +71,60 @@ var infoAnnees = {
   },
   2020: {
     bareme: [
-      new Bareme(0, 10064, 0),
-      new Bareme(10065, 25659, 0.11),
-      new Bareme(25660, 73369, 0.3),
-      new Bareme(73370, 157806, 0.41),
-      new Bareme(157807, Number.MAX_VALUE, 0.45)
+      new Bareme(0, 10084, 0),
+      new Bareme(10085, 25710, 0.11),
+      new Bareme(25711, 73516, 0.3),
+      new Bareme(73517, 158122, 0.41),
+      new Bareme(158123, Number.MAX_VALUE, 0.45)
     ],
     plafondQfParDemiPartSup: 1567,
     decote: function (montant, etatcivil) {
       let impotMax = 0;
       let baseCalcul = 0;
       if (etatcivil === 1) {
-        impotMax = 1611;
-        baseCalcul = 1208;
+        impotMax = 1717;
+        baseCalcul = 777;
       }
       else {
-        impotMax = 2653;
-        baseCalcul = 1990;
+        impotMax = 2842;
+        baseCalcul = 1286;
       }
 
       let decote = 0;
       if (montant <= impotMax) {
-        decote = baseCalcul - montant * 0.75;
+        decote = baseCalcul - montant * 0.4525;
+      }
+
+      return Math.min(Math.round(decote), montant);
+    },
+    allegement: function () {
+      return 0;
+    }
+  },
+  2021: {
+    bareme: [
+      new Bareme(0, 10225, 0),
+      new Bareme(10226, 26070, 0.11),
+      new Bareme(26071, 74545, 0.3),
+      new Bareme(74546, 160336, 0.41),
+      new Bareme(160337, Number.MAX_VALUE, 0.45)
+    ],
+    plafondQfParDemiPartSup: 1570,
+    decote: function (montant, etatcivil) {
+      let impotMax = 0;
+      let baseCalcul = 0;
+      if (etatcivil === 1) {
+        impotMax = 1722;
+        baseCalcul = 779;
+      }
+      else {
+        impotMax = 2849;
+        baseCalcul = 1289;
+      }
+
+      let decote = 0;
+      if (montant <= impotMax) {
+        decote = baseCalcul - montant * 0.4525;
       }
 
       return Math.min(Math.round(decote), montant);
