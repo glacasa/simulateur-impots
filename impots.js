@@ -17,58 +17,6 @@ class Bareme {
 }
 
 var infoAnnees = {
-  2019: {
-    bareme: [
-      new Bareme(0, 10064, 0),
-      new Bareme(10065, 27794, 0.14),
-      new Bareme(27795, 74517, 0.3),
-      new Bareme(74518, 157806, 0.41),
-      new Bareme(157807, Number.MAX_VALUE, 0.45)
-    ],
-    plafondQfParDemiPartSup: 1551,
-    decote: function (montant, etatcivil) {
-      let impotMax = 0;
-      let baseCalcul = 0;
-      if (etatcivil === 1) {
-        impotMax = 1611;
-        baseCalcul = 1208;
-      }
-      else {
-        impotMax = 2653;
-        baseCalcul = 1990;
-      }
-
-      let decote = 0;
-      if (montant <= impotMax) {
-        decote = baseCalcul - montant * 0.75;
-      }
-
-      return Math.min(Math.round(decote), montant);
-    },
-    allegement: function (montant, revenuFiscalReference, etatcivil, parts) {
-      let allegementsIndiv = {
-        revenuMaxAllegementDegressif: 21248,
-        revenuMaxAllegementComplet: 19175,
-        augmentationSeuilParPart: 3835 * 2
-      };
-
-      let revenuMaxDegressif = allegementsIndiv.revenuMaxAllegementDegressif * etatcivil;
-      revenuMaxDegressif += allegementsIndiv.augmentationSeuilParPart * (parts - etatcivil);
-
-      if (revenuFiscalReference <= revenuMaxDegressif) {
-        let allegementComplet = montant * 0.2;
-        let revenuMaxComplet = allegementsIndiv.revenuMaxAllegementComplet * etatcivil;
-        if (this.revenuFiscalReference <= revenuMaxComplet) {
-          return Math.round(allegementComplet);
-        }
-        else {
-          return Math.round(allegementComplet * ((revenuMaxDegressif - revenuFiscalReference) / (revenuMaxDegressif - revenuMaxComplet)));
-        }
-      }
-
-      return 0;
-    }
-  },
   2020: {
     bareme: [
       new Bareme(0, 10084, 0),
@@ -96,9 +44,6 @@ var infoAnnees = {
       }
 
       return Math.min(Math.round(decote), montant);
-    },
-    allegement: function () {
-      return 0;
     }
   },
   2021: {
@@ -128,9 +73,6 @@ var infoAnnees = {
       }
 
       return Math.min(Math.round(decote), montant);
-    },
-    allegement: function () {
-      return 0;
     }
   },
   2022: {
@@ -159,9 +101,6 @@ var infoAnnees = {
 		}
 
 		return Math.min(Math.round(decote), montant);
-	},
-	allegement: function () {
-		return 0;
 	}
   }
 };
@@ -278,20 +217,12 @@ var app = new Vue({
     decote() {
       return this.infoCalcul.decote(this.droitsSimples, this.etatcivil);
     },
-    allegement() {
-      let montant = this.droitsSimples - this.decote;
-
-      return this.infoCalcul.allegement(montant, this.revenuFiscalReference, this.etatcivil, this.parts);
-    },
     montantTotalIR() {
       // https://www.service-public.fr/particuliers/vosdroits/F34328
       let montant = this.droitsSimples;
 
       // Décote
       montant -= this.decote;
-
-      // Allegement sous conditions de ressources
-      montant -= this.allegement;
 
       // TODO contribution hauts revenus
       // https://www.service-public.fr/particuliers/vosdroits/F31130
