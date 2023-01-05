@@ -132,6 +132,37 @@ var infoAnnees = {
     allegement: function () {
       return 0;
     }
+  },
+  2022: {
+	bareme: [
+		new Bareme(0, 10777, 0),
+		new Bareme(10778, 27478, 0.11),
+		new Bareme(27479, 48570, 0.3),
+		new Bareme(78571, 168994, 0.41),
+		new Bareme(168995, Number.MAX_VALUE, 0.45)
+	],
+	plafondQfParDemiPartSup: 1678,
+	decote: function (montant, etatcivil) {
+		let impotMax = 0;
+		let baseCalcul = 0;
+		if (etatcivil === 1) {
+			impotMax = 1841;
+			baseCalcul = 833;
+		} else {
+			impotMax = 3045;
+			baseCalcul = 1378;
+		}
+
+		let decote = 0;
+		if (montant <= impotMax) {
+			decote = baseCalcul - montant * 0.4525;
+		}
+
+		return Math.min(Math.round(decote), montant);
+	},
+	allegement: function () {
+		return 0;
+	}
   }
 };
 
@@ -139,7 +170,7 @@ var infoAnnees = {
 var app = new Vue({
   el: "#app",
   data: {
-    annee: 2020,
+    annee: 2022,
     listeAnnees: Object.keys(infoAnnees),
 
     //Calcul du nombre de parts
