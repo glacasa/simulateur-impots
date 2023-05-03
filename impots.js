@@ -79,7 +79,7 @@ var infoAnnees = {
 	bareme: [
 		new Bareme(0, 10777, 0),
 		new Bareme(10778, 27478, 0.11),
-		new Bareme(27479, 48570, 0.3),
+		new Bareme(27479, 78570, 0.3),
 		new Bareme(78571, 168994, 0.41),
 		new Bareme(168995, Number.MAX_VALUE, 0.45)
 	],
