@@ -137,7 +137,7 @@ var infoAnnees = {
 var app = new Vue({
   el: "#app",
   data: {
-    annee: 2022,
+    annee: 2023,
     listeAnnees: Object.keys(infoAnnees),
 
     //Calcul du nombre de parts
