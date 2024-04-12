@@ -102,6 +102,34 @@ var infoAnnees = {
 
 		return Math.min(Math.round(decote), montant);
 	}
+  },
+  2023: {
+	bareme: [
+		new Bareme(0, 11294, 0),
+		new Bareme(11295, 28797, 0.11),
+		new Bareme(28798, 82341, 0.3),
+		new Bareme(82352, 177106, 0.41),
+		new Bareme(177107, Number.MAX_VALUE, 0.45)
+	],
+	plafondQfParDemiPartSup: 1759,
+	decote: function (montant, etatcivil) {
+		let impotMax = 0;
+		let baseCalcul = 0;
+		if (etatcivil === 1) {
+			impotMax = 1929;
+			baseCalcul = 873;
+		} else {
+			impotMax = 3191;
+			baseCalcul = 1444;
+		}
+
+		let decote = 0;
+		if (montant <= impotMax) {
+			decote = baseCalcul - montant * 0.4525;
+		}
+
+		return Math.min(Math.round(decote), montant);
+	}
   }
 };
 
